@@ -10,9 +10,10 @@ terraform console
 
 테라폼은 map,list 방식의 변수를 선언할 수 있고, 슬라이싱도 가능함(1.tf 파일 참조)
 
-terraform.tfvars 파일을 이용해서 변수를 미리 선언해 줄수 있음
+terraform.tfvars 파일을 이용해서 변수를 미리 선언해 줄수 있음, 그리고 apply할때는 참조 파일 써주면 됨
+terraform apply -var-file="terraform.tfvars"
 
-<<<<<<< HEAD
+
 Terraform은 현재 디렉토리에 있는 모든 .tf 파일을 읽는다.
 -> 이름따위는 상관없음
 
@@ -21,7 +22,45 @@ aws 공급자를 이용하기 위해서는 맨처음 초기화를 먼저 해줘�
 -> 플러그인, 새로운 공급자들을 사용할 떄마다 초기화를 무조건 시켜 줘야함
 terraform init
 
-=======
+테라폼 적용 & 파괴는
+terraform apply
+terraform destroy
+
+------------------------------------------
+테라폼 변수 유형
+
+string
+number
+bool
+
+list(type)
+-> [1,9,5,2]
+-> ! 리스트 항상 반환은 큰숫자 부터 반환됨 [9,5,2,1]
+
+키:벨류로 구성
+map(type)
+->{"key"="value"}
+
+set(type)
+-> 은 리스트와 비슷하지만 유니크한 값들만 저장됨(파이썬 셋 객체랑 같음)
+-> [5,1,1,1,2]라면 [1,2,5]가 반환됨, 리스트와 다르게 정렬이 되진 않음
+
+object
+-> 는 그냥 배열 같은 것임
+{
+    name="jahong"
+    pthon_numer =010223142
+}
 
 
->>>>>>> a3c277fb0af518d7d89888bd52ced3ebf82f73f1
+tuple([])
+-> 리스트와 같지만, 서로 다른 타입의 자료를 가질 수 있음
+[0,"sting",false]
+
+
+
+
+
+
+
+
