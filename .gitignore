@@ -1,2 +1,5 @@
 env/
+<<<<<<< HEAD
 tf_file/.terraform/
+=======
+>>>>>>> a3c277fb0af518d7d89888bd52ced3ebf82f73f1
