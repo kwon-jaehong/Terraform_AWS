@@ -2,7 +2,6 @@ provider "aws"{
 
 }
 
-<<<<<<< HEAD
 variable "AWS_REGION" {
     type = string
 }
@@ -26,13 +25,6 @@ resource "aws_instance" "example2" {
     instance_type = "t2.small"
 }
 resource "aws_instance" "example3" {
-=======
-variable "AWS_REGION"{
-    type = string
-}
-
-resource "aws_instance" "example" {
->>>>>>> a3c277fb0af518d7d89888bd52ced3ebf82f73f1
     ami = var.AMIS[var.AWS_REGION]
     instance_type = "t2.micro"
 }
