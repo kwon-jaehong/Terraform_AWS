@@ -1,5 +1,14 @@
 프로비저닝 : 사용자의 요구에 맞게 시스템 자원을 할당, 배치, 배포해 두었다가 필요 시 시스템을 즉시 사용할 수 있는 상태로 미리 준비해 두는 것을 말한다.
 
+내 공인 ip 알기 
+nslookup myip.opendns.com resolver1.opendns.com
+Server:         resolver1.opendns.com
+Address:        208.67.222.222#53
+
+Non-authoritative answer:
+Name:   myip.opendns.com
+Address: 118.176.134.211 (이거임)
+
 ----------------------------------------
 테라폼 상태파일 내 오브젝트 현황 확인
 terraform state list
@@ -57,9 +66,40 @@ tuple([])
 -> 리스트와 같지만, 서로 다른 타입의 자료를 가질 수 있음
 [0,"sting",false]
 
+-----------------------------------------------
+map 에서 키를 찾는 lookup함수
+variable "availability_zones" {
+  type = "map"
+  default = {
+    "eu-west-1" = "eu-west-1a,eu-west-1b,eu-west-1c"
+    "us-west-1" = "us-west-1b,us-west-1c"
+    "us-west-2" = "us-west-2a,us-west-2b,us-west-2c"
+    "us-east-1" = "us-east-1c,us-west-1d,us-west-1e"
+  }
+}
+> lookup(var.availability_zones, "us-east-1")
+us-east-1c,us-west-1d,us-west-1e
+------------------------------------------------------
+소프트웨어 프로비저닝 -> 이미지에서 소프트웨어 설치
+provisioner로 설정한다
+예시)
+resource "aws_instance" "example1" {
+    ## ami는 ec2를 생성할때 사용할 이미지
+    ami = "ami-003bb1772f36a39a3"
+    instance_type = "t2.micro"
+    ## aws 키페어 리소스에서 키네임을 가져오겠다
+    key_name = "&{aws_key_pair.jaehong-key.key_name}"
+    provisioner "file" {
+    source = "script.sh"
+    destination = "/opt/script.sh"
+    connetion {
+        user = "${var.instance_username}"
+        password = "${file(${var.path_to_private_key})}"
+    }}
+}
+인스턴스를 생성할때 provisioner를 통해 커넥션하고 파일을 옮기고, 함
 
-
-
+-------------------------------------------------------------
 
 
 
