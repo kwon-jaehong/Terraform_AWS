@@ -1,0 +1,11 @@
+
+# 폴더, 파일 생성후 내용 추가 file 모듈 https://ikcoo.tistory.com/253
+- name: docker_install # 플레이 1
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: yaml 파일 파싱
+      ansible.builtin.include_vars:
+        file: setup.yaml
+        name: temp

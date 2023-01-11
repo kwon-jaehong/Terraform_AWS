@@ -16,28 +16,20 @@ resource "local_file" "ssh_key" {
   content = tls_private_key.pk.private_key_pem
 }
 
-# ## aws ec2 연결 키페어 파일 경로 등록
-# resource "aws_key_pair" "mykey"{
-#     key_name = "mykey"
-#     public_key = "${file("${var.path_to_public_key}")}"
-# }
-
 
 resource "aws_instance" "gitlab_server_instance" {
     ## ami는 ec2를 생성할때 사용할 이미지
     ami = var.ami_id
-    instance_type = var.git_instance_type
+    instance_type = var.git_server_instance_type
     
-    subnet_id = "${aws_subnet.gitlab-public.id}"
+    subnet_id = "${aws_subnet.gitlab_public.id}"
     vpc_security_group_ids = ["${aws_security_group.gitlab_security_group.id}"]  
-    
-    
     key_name = "${aws_key_pair.mykey.key_name}"
 
     ## 루트 권한으로 실행 및 권한 주기
     provisioner "remote-exec" {
         inline = [
-            "echo whoami",
+            "echo 접속 확인",
         ]
     }
 
@@ -48,6 +40,38 @@ resource "aws_instance" "gitlab_server_instance" {
         host = self.public_ip
     }
     
+    tags = {
+        Name = "gitlab_server"
+    }
+}
+
+## 러너 인스턴스 선언
+resource "aws_instance" "gitlab_runner_instance" {
+    count = 2
+    ## ami는 ec2를 생성할때 사용할 이미지
+    ami = var.ami_id
+    instance_type = var.git_server_instance_type    
+    subnet_id = "${aws_subnet.gitlab_public.id}"
+    vpc_security_group_ids = ["${aws_security_group.gitlab_security_group.id}"]  
+    key_name = "${aws_key_pair.mykey.key_name}"
+
+    ## 루트 권한으로 실행 및 권한 주기
+    provisioner "remote-exec" {
+        inline = [
+            "echo 접속 확인",
+        ]
+    }
+
+    # connetion의 기본값은 ssh이다.
+    connection {
+        user = "ubuntu"
+        private_key = "${file("${aws_key_pair.mykey.key_name}.pem")}"
+        host = self.public_ip
+    }
+    
+    tags = {
+        Name = "gitlab_runner-${count.index+1}"
+    }
 }
 
 
