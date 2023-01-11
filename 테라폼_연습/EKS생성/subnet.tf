@@ -10,7 +10,7 @@ resource "aws_subnet" "public_1" {
   # vpc id 가져옴
   vpc_id = aws_vpc.main.id
 
-  # The CIDR block for the subnet.
+  # 사이더블럭 범위
   cidr_block = "192.168.0.0/18"
 
   # The AZ for the subnet.

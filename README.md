@@ -11,6 +11,10 @@ Non-authoritative answer:
 Name:   myip.opendns.com
 Address: 118.176.134.211 (이거임)
 
+--------------------------------------
+AWS 우분투 이미지 확인
+cloud-images.ubuntu.com/locator/ec2
+
 ----------------------------------------
 테라폼 워크 스페이스
 
