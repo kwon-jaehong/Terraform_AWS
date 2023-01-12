@@ -10,7 +10,7 @@ resource "aws_security_group" "gitlab_security_group" {
         protocol = "TCP"
         cidr_blocks = ["0.0.0.0/0"]
     }
-    ## 모든 주소 80포트 허용
+    ## 모든 주소 80포트 허용 (깃랩 서버 접속용)
     ingress {
         from_port = 80
         to_port = 80
@@ -18,10 +18,19 @@ resource "aws_security_group" "gitlab_security_group" {
         ## 모든 주소 22포트 접속 허용
         cidr_blocks = ["0.0.0.0/0"]
     }
-    ## 모든 주소 443포트 허용
+    ## 모든 주소 443포트 허용 (https용)
     ingress {
         from_port = 443
         to_port = 443
+        protocol = "TCP"
+        ## 모든 주소 22포트 접속 허용
+        cidr_blocks = ["0.0.0.0/0"]
+    }    
+
+    ## 모든 주소 8888포트 허용 (깃랩 ssh용)
+    ingress {
+        from_port = 8888
+        to_port = 8888
         protocol = "TCP"
         ## 모든 주소 22포트 접속 허용
         cidr_blocks = ["0.0.0.0/0"]

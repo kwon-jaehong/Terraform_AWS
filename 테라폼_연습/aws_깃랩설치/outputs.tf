@@ -1,3 +1,5 @@
+## 테라폼실행 결과, 중요한 정보를 저장하는 스크립트
+
 ## 깃랩 서버 퍼블릭 ip 출력
 # output "gitlab_server_instance" {
 #     value = aws_instance.gitlab_server_instance.public_ip
@@ -37,7 +39,7 @@ resource "local_file" "outputdata" {
 resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/script/inventory.tpl",
     {
-        gitlab_server_ip = "${ aws_instance.gitlab_server_instance.public_ip}"
+        gitlab_server_ip = "${aws_eip.gitlab_server_instance_eip.public_ip}"
         gitlab_runner_ip = aws_instance.gitlab_runner_instance.*.public_ip
     }
   )

@@ -8,8 +8,18 @@ variable "git_server_instance_type" {
     # 인스턴스 유형 A1, T4g, M6g, C6g 및 R6g는 AWS Graviton 프로세서를 사용합니다. AWS Graviton 프로세서는 x86_64(AMD64) 대신 aarch64(ARM64) 아키텍처를 사용합니다.
     # default ="t4g.medium"
     
-    default ="t3.medium"
+    default ="t3.xlarge"
 }
+
+variable "git_runner_instance_type" {
+    type = string
+    # https://aws.amazon.com/ko/premiumsupport/knowledge-center/ec2-instance-types-disabled-at-launch/
+    # 인스턴스 유형 A1, T4g, M6g, C6g 및 R6g는 AWS Graviton 프로세서를 사용합니다. AWS Graviton 프로세서는 x86_64(AMD64) 대신 aarch64(ARM64) 아키텍처를 사용합니다.
+    # default ="t4g.medium"
+    
+    default ="t3.small"
+}
+
 
 
 

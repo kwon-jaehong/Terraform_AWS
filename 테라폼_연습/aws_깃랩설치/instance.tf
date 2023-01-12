@@ -26,6 +26,11 @@ resource "aws_instance" "gitlab_server_instance" {
     vpc_security_group_ids = ["${aws_security_group.gitlab_security_group.id}"]  
     key_name = "${aws_key_pair.mykey.key_name}"
 
+    root_block_device {
+    volume_type           = "gp2"
+    volume_size           = "30"
+    }
+
     ## 루트 권한으로 실행 및 권한 주기
     provisioner "remote-exec" {
         inline = [
@@ -50,7 +55,7 @@ resource "aws_instance" "gitlab_runner_instance" {
     count = 2
     ## ami는 ec2를 생성할때 사용할 이미지
     ami = var.ami_id
-    instance_type = var.git_server_instance_type    
+    instance_type = var.git_runner_instance_type    
     subnet_id = "${aws_subnet.gitlab_public.id}"
     vpc_security_group_ids = ["${aws_security_group.gitlab_security_group.id}"]  
     key_name = "${aws_key_pair.mykey.key_name}"
