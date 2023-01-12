@@ -5,7 +5,22 @@
   connection: local
 
   tasks:
-    - name: yaml 파일 파싱
-      ansible.builtin.include_vars:
-        file: setup.yaml
-        name: temp
+    - name: txt 파일 읽는법
+      shell:
+        "cat eip.txt"
+      register: eip ## cat 내용을 eip라는 변수에 저장 
+    - debug: msg="{{eip.stdout}}" ## eip 변수 출력
+
+
+    - name: json 파일 읽고, 변수 result에 저장
+      shell: cat terraform_setup.json
+      register: result
+
+    - name: fact로 저장 # set_fact 플레이북의 런타임에 새로운 ansible 변수를 생성하는 데 사용됩니다. 런타임 변수 또는 동적 변수라고 부를 수도 있습니다.
+      set_fact:
+          jsondata: "{{ result.stdout | from_json }}"
+
+    # - debug: msg="{{result.stdout}}" ## eip 변수 출력
+    - debug: msg="{{jsondata.git_runner_public_ip}}" ## eip 변수 출력
+    
+

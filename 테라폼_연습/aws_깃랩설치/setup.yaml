@@ -1,6 +1,21 @@
 # https://www.ansiblepilot.com/articles/install-docker-in-debian-like-systems-ansible-module-apt_key-apt_repository-and-apt/
 
 # 플레이 1
+- name: 테라폼에서 나온 json으로 앤서블 동적 변수 선언 
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: json 파일 읽고, 변수 result에 저장
+      shell: cat terraform_setup.json
+      register: terraform_json_read
+
+    # set_fact 플레이북의 런타임에 새로운 ansible 변수를 생성하는 데 사용됩니다. 런타임 변수 또는 동적 변수라고 부를 수도 있습니다.
+    - name: 엔서블에서 동적 변수로 사용할 수 있게 fact(dict 형태)로 저장 
+      set_fact:
+          jsondata: "{{ terraform_json_read.stdout | from_json }}"
+
+
+# 플레이 2
 - name: 깃랩 서버,러너 도커 설치 (gitlab server, runner docker installation)
   hosts: gitlab_runner,gitlab_server # 설치할 인벤토리 그룹
   become: true  # 루트 계정 접속
@@ -39,8 +54,19 @@
         state: latest
         update_cache: true
 
-# 플레이2 
+
+# 플레이3
 - name: 깃랩 서버에 깃랩 설치 (Install gitlab on gitlab_server)
   hosts: gitlab_server # 설치할 인벤토리 그룹
   become: true  # 루트 계정 접속
   tasks:
+    - name: 깃랩 컨테이너 다운 및 실행 
+      docker_container:
+        name: gitlab/gitlab-ce
+        state: started
+        image: ubuntu:14.04
+        restart_policy: always
+        command: ["sleep", "infinity"]
+        ports:
+          - "80:80"
+          - "443:443"
