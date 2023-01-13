@@ -1,0 +1,6 @@
+[gitlab_server]
+gitlab_server ansible_host=${gitlab_server_ip} ansible_user=ubuntu
+[gitlab_runner]
+%{  for index,ip in zipmap(split(",",gitlab_runner_number),split(",",gitlab_runner_ip)) ~}
+gitlab_runner-${index} ansible_host=${ip} ansible_user=ubuntu
+%{ endfor ~}

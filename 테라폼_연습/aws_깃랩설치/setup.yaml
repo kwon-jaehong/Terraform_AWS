@@ -13,9 +13,8 @@
     - name: 엔서블에서 동적 변수로 사용할 수 있게 fact(dict 형태)로 저장 
       ansible.builtin.set_fact:
           terraform_json: "{{ terraform_json_read.stdout | from_json }}"
-
-
     # - debug: msg="{{terraform_json_r.git_runner_public_ip}}" ## eip 변수 출력
+
 
 # # 플레이 2
 # - name: 깃랩 서버,러너 도커 설치 (gitlab server, runner docker installation)
@@ -35,7 +34,7 @@
 #         state: latest
 #         update_cache: true
         
-#     - name: 도커 키 추가 (Add signing key)
+#     - name: 도커 사인키 로컬에 추가 (Add signing key)
 #       ansible.builtin.apt_key:
 #         url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
 #         state: present
@@ -57,17 +56,18 @@
 #         update_cache: true
 
 
-# 플레이3
-# https://forum.gitlab.com/t/deploy-a-gitlab-container-using-ansible/24526
+## 플레이3
+## https://forum.gitlab.com/t/deploy-a-gitlab-container-using-ansible/24526
 - name: 깃랩 서버에 깃랩 설치 (Install gitlab on gitlab_server)
   hosts: gitlab_server # 설치할 인벤토리 그룹
   become: true  # 루트 계정 접속
   # strategy: debug
+
   tasks:
-    - name: 깃랩 컨테이너 다운 및 실행
+    - name: 깃랩서버 컨테이너 다운 및 실행
       docker_container:
         name: gitlab_server
-        image: gitlab/gitlab-ce
+        image: gitlab/gitlab-ce:15.4.6-ce.0
         state: started
         restart_policy: always
         hostname: "{{hostvars.localhost.terraform_json.git_server_eip}}"
@@ -83,7 +83,7 @@
           GITLAB_OMNIBUS_CONFIG: |
             external_url="http://{{hostvars.localhost.terraform_json.git_server_eip}}"
             gitlab_rails['gitlab_shell_ssh_port']=8888
-        # register: gitlab_container_status
+
 
 
     ## 이 테스크 위에 컨테이너 헬스체크 하나 넣자
@@ -98,13 +98,84 @@
       retries: 32 # 10초 * 32번 시도, 8분
       delay: 15 
       register: uri_output
+    - debug: msg="http://{{hostvars.localhost.terraform_json.git_server_eip}}"
+
+    ## https://stackoverflow.com/questions/59701804/obtain-shared-runners-token-gitlab-api
+    - name: 깃랩 서버 공유 러너 토큰 확인 (Gitlab Server Shared Runner Token check)
+      community.docker.docker_container_exec:
+        container: gitlab_server
+        command: /bin/bash gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"
+      register: gitlab_shared_runner_token
+    - debug: msg={{ gitlab_shared_runner_token.stdout }}
 
 
-    # https://stackoverflow.com/questions/59701804/obtain-shared-runners-token-gitlab-api
-    # - name: 깃랩 서버 공유 러너 토큰 확인
-    # gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"
-    
-    # - name: 깃랩 root 아이디 패스워드 확인
+    - name:  깃랩 root 아이디 패스워드 확인
+      community.docker.docker_container_exec:
+        # debug: true
+        container: gitlab_server
+        argv:
+          - /bin/bash
+          - "-c"
+          - cat initial_root_password | grep "Password:" | cut -d ":" -f2 | sed -e 's/\s\+//g'
+        chdir: /etc/gitlab
+      register: gitlab_root_ini_passwd
+    - debug: msg={{ gitlab_root_ini_passwd.stdout }}
+
+
+
+
+## 플레이4
+# https://forum.gitlab.com/t/deploy-a-gitlab-container-using-ansible/24526
+- name: 깃랩서버에 깃랩 러너에 깃랩 등록 
+  hosts: gitlab_runner # 설치할 인벤토리 그룹
+  become: true  # 루트 계정 접속
+  strategy: debug
+
+  tasks:
+    - name: 깃랩 러너 도커 다운 밑 실행
+      docker_container:
+        name: gitlab_runner
+        image: gitlab/gitlab-runner:ubuntu-v15.5.1
+        state: started
+        restart_policy: always
+        volumes:
+          - /gitlab-runner/config:/etc/gitlab-runner ## 컨피그파일 저장
+          - /var/run/docker.sock:/var/run/docker.sock ## 도커데몬 소켓 연동
+
+    - name: 기존 러너 탐색 (멱등성 보장을 위해 config파일 탐색)
+      shell: cat config.toml | grep 'runners' -c
+      args:
+        chdir: /gitlab-runner/config
+        executable: /bin/bash
+      register: runner_count
+      ignore_errors: true
+
+    ### - name: 러너 리스트 클리어
+    ###   shell:  docker exec -it gitlab_runner /usr/bin/gitlab-runner unregister --all-runners
+
+    - name: 러너 등록
+      shell: docker exec -it gitlab_runner /usr/bin/gitlab-runner register -n --url http://{{hostvars.localhost.terraform_json.git_server_eip}} --registration-token {{hostvars.gitlab_server.gitlab_shared_runner_token.stdout}} --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+      when: runner_count.stdout == "0"
+
+
+
+
+
+# #     # - name: 러너 등록
+# #     #   community.docker.docker_container_exec:
+# #     #     # debug: true
+# #     #     container: gitlab_runner
+# #     #     command: /usr/bin/gitlab-runner register -n --url http://13.59.165.106 --registration-token M5r8rHJK_ZWyhcyTB8SM --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+
+
+
+
+
+
+
+
+
+
 
 
 
