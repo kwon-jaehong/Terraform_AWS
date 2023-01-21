@@ -7,6 +7,11 @@ https://aws.github.io/aws-eks-best-practices/networking/subnets/
 
 
 https://aws.github.io/aws-eks-best-practices/networking/subnets/
+-------------------------------------------------------------------------
+
+EKS는 기본적으로 CNI(컨테이너 네트워크 인터페이스)가 설칙가 되어 있다.
+-> 칼리코,플라넬처럼 쿠버네티스에서 따로 설치할 필요가 없다!!!
+
 
 VPC 설계를 시작하거나 기존 VPC에 클러스터를 배포하기 전에 EKS 컨트롤 플레인 통신 메커니즘을 이해하는 것이 좋습니다.
 EKS 클러스터는 두 개의 VPC로 구성됩니다.
