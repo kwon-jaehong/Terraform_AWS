@@ -14,3 +14,27 @@ resource "aws_route_table" "eks_public_route_table" {
     Name = "eks_public"
   }
 }
+
+resource "aws_route_table" "eks_private1_route_table" {
+  vpc_id = aws_vpc.eks_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw1.id
+  }
+  tags = {
+    Name = "private1"
+  }
+}
+
+resource "aws_route_table" "eks_private2_route_table" {
+  vpc_id = aws_vpc.eks_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw2.id
+  }
+  tags = {
+    Name = "private2"
+  }
+}
+

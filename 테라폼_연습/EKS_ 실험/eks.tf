@@ -42,8 +42,8 @@ resource "aws_iam_role_policy_attachment" "amazon_eks_cluster_policy" {
 }
 
 ## EKS 생성
-resource "aws_eks_cluster" "eks" {
-  name = "eks"
+resource "aws_eks_cluster" "chunjae_ocr" {
+  name = "chunjae_ocr"
 
   # The Amazon Resource Name (ARN) of the IAM role that provides permissions for 
   # the Kubernetes control plane to make calls to AWS API operations on your behalf
@@ -66,9 +66,12 @@ resource "aws_eks_cluster" "eks" {
 
     # Must be in at least two different availability zones
     # 적어도 두 개의 서로 다른 가용 영역에 있어야 합니다.
+    ## EKS에는 모든 EKS용 서브넷 연결
     subnet_ids = [
       aws_subnet.eks_public_1.id,
-      aws_subnet.eks_public_2.id
+      aws_subnet.eks_public_2.id,
+      aws_subnet.eks_private_1.id,
+      aws_subnet.eks_private_2.id
     ]
   }
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.

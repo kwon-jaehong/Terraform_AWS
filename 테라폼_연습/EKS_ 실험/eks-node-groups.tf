@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 resource "aws_eks_node_group" "ocr_node_group" {
 
   ## 클러스터 네임
-  cluster_name = aws_eks_cluster.eks.name
+  cluster_name = aws_eks_cluster.chunjae_ocr.name
 
   # 노드그룹 이름 지정
   node_group_name = "ocr_node_group"
@@ -68,9 +68,10 @@ resource "aws_eks_node_group" "ocr_node_group" {
   # EKS 노드 그룹과 연결할 EC2 서브넷의 식별자입니다.
   # 이 서브넷에는 다음 리소스 태그가 있어야 합니다. kubernetes.io/cluster/CLUSTER_NAME
   # (여기서 CLUSTER_NAME은 EKS 클러스터의 이름으로 대체됨).
+  ## 프라이빗 존을 쓰지만... nat게이트 웨이를 통해 퍼블릭하게 운영 가능
   subnet_ids = [
-    aws_subnet.eks_public_1.id,
-    aws_subnet.eks_public_2.id
+    aws_subnet.eks_private_1.id,
+    aws_subnet.eks_private_2.id
   ]
 
   # Configuration block with scaling settings
