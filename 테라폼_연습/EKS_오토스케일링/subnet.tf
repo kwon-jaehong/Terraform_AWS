@@ -16,13 +16,12 @@ resource "aws_subnet" "eks_public_1" {
   # 가용 영역 지정
   availability_zone = "${var.AWS_REGION}a"
 
-  # 퍼블릭 서브넷이므로 서버 등을 띄울 때 자동으로 퍼블릭 IP가 할당되도록 map_public_ip_on_launch true 지정
+  # 퍼블릭 서브넷이므로 서버 등을 띄울 때 자동으로 퍼블릭 IP가 할당되도록 map_public_ip_on_launch true 지ㅓㅈㅇ
   map_public_ip_on_launch = true
 
 
+  # A map of tags to assign to the resource.
   # 리소스에 할당할 태그 맵입니다.
-  # https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-vpc-subnet-discovery/
-  # . shared 값은 둘 이상의 클러스터가 서브넷을 사용할 수 있도록 허용합니다.
   tags = {
     Name                        = "public-${var.AWS_REGION}a"
     "kubernetes.io/cluster/${var.EKS_NAME}" = "shared"
@@ -36,6 +35,7 @@ resource "aws_subnet" "eks_public_2" {
   availability_zone = "${var.AWS_REGION}c"
   map_public_ip_on_launch = true
 
+  # A map of tags to assign to the resource.
   tags = {
     Name                        =  "public-${var.AWS_REGION}c"
     "kubernetes.io/cluster/${var.EKS_NAME}" = "shared"

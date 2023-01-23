@@ -7,3 +7,8 @@ variable "AWS_SECRKEY" {
 variable "AWS_REGION" {
     type = string
 }
+
+variable "EKS_NAME" {
+    type = string
+    default = "chunjae_ocr"
+}

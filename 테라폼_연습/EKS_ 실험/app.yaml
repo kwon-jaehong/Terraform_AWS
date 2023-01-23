@@ -29,6 +29,11 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
     service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+      # https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=theswice&logNo=221174336958
+      # Cross-Zone Load Balancing(크로스존 부하 분산)입니다. 
+      # 활성화하면 각각의 AZ에 있는 ELB는 모든 AZ에 존재하는 EC2 인스턴스에 요청을 분산할 수 있게 됩니다. 
+      #  새로운 ELB를 생성하면, 이러한 설정이 자동적으로 활성화됩니다. 이전에 만들어진 ELB도 특별한 문제가 없다면,
+      #  Cross-Zone Load Balancing 설정을 활성화하는 것이 좋습니다.
 spec:
   selector:
     app: nginx

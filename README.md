@@ -10,15 +10,8 @@
 
 
 
-
-
-패캠 
-AWS 보안, EKS 등 봐야됨
-https://www.youtube.com/watch?v=kRKmcYC71J4
-
-
-
-
+아르고 CD
+https://www.youtube.com/watch?v=-hO1m__aLu8&t=222s
 
 
 https://renandeandradevaz.medium.com/using-terraform-to-create-a-kubernetes-cluster-and-a-nginx-ingress-242fac453a7c
