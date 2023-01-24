@@ -1,3 +1,11 @@
+# https://oflouis.dev/sw_development/devops/aws-eks-monitoring-kube-prometheus-stack/
+# 참고자료
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
 alertmanager:
   service:
     type: NodePort
@@ -27,7 +35,10 @@ grafana:
     size: 10Gi
 prometheus:
   service:
-    type: NodePort
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+    type: LoadBalancer
   prometheusSpec:
     retention: 10d
     retentionSize: "45GB"

@@ -3,17 +3,21 @@
 할일
 - ** 찬수,자봉,희태 소스 -> fast api 변환
 - pod 모니터링, 로그 수집, HPA, 카펜터
-- eks elb 동작 및 쿠버네티스 파드간 주소연결 테스트 확인
 - 앤서블 디버깅 방법 알아보기
-- NACL 패캠 강의 들어야 할듯
+- ecr 만들고 우분투 뉴런 sdk하는거 올리자
+- 
 
 
 
+alb 테라폼 소스인듯
+https://aws.amazon.com/ko/blogs/opensource/deploying-python-flask-microservices-to-aws-using-open-source-tools/
+
+fast api msa 깃헙
+https://github.com/baranbartu/microservices-with-fastapi
 
 아르고 CD
 https://www.youtube.com/watch?v=-hO1m__aLu8&t=222s
 
 
 https://renandeandradevaz.medium.com/using-terraform-to-create-a-kubernetes-cluster-and-a-nginx-ingress-242fac453a7c
-https://dev.to/aws-builders/create-a-simple-ingress-nginx-controller-on-amazon-eks-cluster-with-full-example-5ei1
 
