@@ -69,9 +69,13 @@ resource "aws_eks_node_group" "ocr_node_group" {
   # 이 서브넷에는 다음 리소스 태그가 있어야 합니다. kubernetes.io/cluster/CLUSTER_NAME
   # (여기서 CLUSTER_NAME은 EKS 클러스터의 이름으로 대체됨).
   ## 프라이빗 존을 쓰지만... nat게이트 웨이를 통해 퍼블릭하게 운영 가능
+  # subnet_ids = [
+  #   aws_subnet.eks_private_1.id,
+  #   aws_subnet.eks_private_2.id
+  # ]
   subnet_ids = [
-    aws_subnet.eks_private_1.id,
-    aws_subnet.eks_private_2.id
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
   ]
 
   # Configuration block with scaling settings
