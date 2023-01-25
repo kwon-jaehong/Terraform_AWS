@@ -55,6 +55,10 @@ Amazon EKS는 지정한 서브넷에 최대 4개의 교차 계정(x-account 또�
 
 Kubernetes 작업자 노드는 클러스터 서브넷에서 실행할 수 있지만 권장되지 않습니다. 노드 및 Kubernetes 리소스를 실행하기 위한 전용 새 서브넷을 생성할 수 있습니다. 노드는 퍼블릭 또는 프라이빗 서브넷에서 실행할 수 있습니다. 
 
-
+--------------------------
+원하는 노드에 파드 띄우기
+https://aws-diary.tistory.com/123
+또는 https://www.eksworkshop.com/advanced/430_emr_on_eks/eks_emr_using_node_selectors/
+를 이용해 노드그룹 네임을 통해 띄울수도 있음
 
 

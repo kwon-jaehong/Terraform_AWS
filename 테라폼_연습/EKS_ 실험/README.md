@@ -16,7 +16,14 @@ kubectl get nodes
 모니터링
 https://oflouis.dev/sw_development/devops/aws-eks-monitoring-kube-prometheus-stack/
 
+helm install monitoring \
+prometheus-community/kube-prometheus-stack \
+--values prometheus-values.yaml \
+--namespace monitoring \
+--create-namespace
 
-
-kubectl create ns prometheus
 helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
+
+helm install stable prometheus-community/kube-prometheus-stack -n default
+
+helm upgrade stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
