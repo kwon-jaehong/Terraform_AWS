@@ -27,3 +27,25 @@ helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml 
 helm install stable prometheus-community/kube-prometheus-stack -n default
 
 helm upgrade stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
+
+----------------------------------------------
+로깅
+https://www.youtube.com/watch?v=yjNMaGEmeQU&t=903s
+
+
+helm search repo elastic/elasticsearch --versions
+
+helm install my-mongodb bitnami/mongodb 
+
+kubectl create namespace dapr-monitoring
+helm install elasticsearch elastic/elasticsearch -n dapr-monitoring  --version 7.6.0 --set replicas=1
+helm install kibana elastic/kibana -n dapr-monitoring --version 7.6.0
+
+kubectl apply -f ./fluentd-config-map.yaml
+kubectl apply -f ./fluentd-dapr-with-rbac.yaml
+
+kubectl create namespace dapr-system
+helm install dapr dapr/dapr --namespace dapr-system --set global.logAsJson=true
+
+kubectl apply -f .\counter.yaml
+

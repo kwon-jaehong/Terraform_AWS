@@ -101,7 +101,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # Disk size in GiB for worker nodes
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 10
+  disk_size = 50
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.
@@ -109,7 +109,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # List of instance types associated with the EKS Node Group
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["t3.small"]
+  instance_types = ["t3.medium"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.
   labels = {
