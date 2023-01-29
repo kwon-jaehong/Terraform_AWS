@@ -1,5 +1,9 @@
 # https://oflouis.dev/sw_development/devops/aws-eks-monitoring-kube-prometheus-stack/
 # 참고자료
+defaultRules:
+  rules:
+    etcd: false
+    kubeScheduler: false
 kubeControllerManager:
   enabled: false
 kubeEtcd:
@@ -10,6 +14,7 @@ alertmanager:
   service:
     type: NodePort
 grafana:
+  adminPassword: test123
   service:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
@@ -57,3 +62,8 @@ prometheus:
           resources:
             requests:
               storage: 50Gi
+    serviceMonitorSelector:
+      matchLabels:
+        prometheus: devops
+commonLabels:
+  prometheus: devops
