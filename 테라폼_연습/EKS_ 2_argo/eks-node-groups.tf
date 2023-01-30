@@ -69,16 +69,20 @@ resource "aws_eks_node_group" "ocr_node_group" {
   # 이 서브넷에는 다음 리소스 태그가 있어야 합니다. kubernetes.io/cluster/CLUSTER_NAME
   # (여기서 CLUSTER_NAME은 EKS 클러스터의 이름으로 대체됨).
   ## 프라이빗 존을 쓰지만... nat게이트 웨이를 통해 퍼블릭하게 운영 가능
+  # subnet_ids = [
+  #   aws_subnet.eks_private_1.id,
+  #   aws_subnet.eks_private_2.id
+  # ]
   subnet_ids = [
-    aws_subnet.eks_private_1.id,
-    aws_subnet.eks_private_2.id
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
   ]
 
   # Configuration block with scaling settings
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
     # Desired number of worker nodes.
-    desired_size = 2
+    desired_size = 3
 
     # Maximum number of worker nodes.
     max_size = 5
@@ -97,7 +101,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # Disk size in GiB for worker nodes
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 10
+  disk_size = 50
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.
@@ -105,7 +109,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # List of instance types associated with the EKS Node Group
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["t3.small"]
+  instance_types = ["t3.medium"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.
   labels = {
@@ -113,7 +117,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
   }
 
   # Kubernetes version
-  version = "1.21"
+  version = "1.23"
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.

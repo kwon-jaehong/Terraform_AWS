@@ -53,7 +53,7 @@ resource "aws_eks_cluster" "chunjae_ocr" {
   role_arn = aws_iam_role.eks_cluster.arn
 
   # Desired Kubernetes master version
-  version = "1.21"
+  version = "1.23"
 
   vpc_config {
     # Indicates whether or not the Amazon EKS private API server endpoint is enabled
