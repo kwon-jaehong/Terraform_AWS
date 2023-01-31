@@ -117,7 +117,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
   }
 
   # Kubernetes version
-  version = "1.23"
+  version = "1.21"
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.

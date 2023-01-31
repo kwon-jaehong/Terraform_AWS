@@ -23,6 +23,8 @@ helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml 
 
 helm install stable prometheus-community/kube-prometheus-stack -n default
 
+helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
+
 helm upgrade stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
 
 ----------------------------------------------

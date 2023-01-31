@@ -20,6 +20,10 @@ https://341123.tistory.com/8
 https://velog.io/@choiys0212/EKS-AutoScaling
 https://haereeroo.tistory.com/22
 
+
+프로메테우스 스크래핑
+https://blog.container-solutions.com/prometheus-operator-beginners-guide
+
 ------------------------------------------------------------
 monitoring
 
@@ -36,3 +40,13 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 아이디 : admin
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 비번 : 
+
+-----
+프로메테우스 설치
+kubectl apply -f ./argocd_prometheus_install.yaml    
+아르고 cd로 들어가서 싱크를 맞추어주면 설치 완료됨
+
+cadvisor 설치
+
+kubectl -n monitoring get secret kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d
+kubectl -n monitoring get secret kube-prometheus-stack-grafana -o jsonpath="{.data.admin-user}" | base64 -d
