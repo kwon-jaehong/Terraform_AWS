@@ -1,40 +1,9 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   finalizers:
-#   - resources-finalizer.argocd.argoproj.io
-#   name: prometheus
-#   namespace: argocd
-# spec:
-#   destination:
-#     namespace: monitoring
-#     server: https://kubernetes.default.svc
-#   project: default
-#   source:
-#     chart: prometheus
-#     helm:
-#       values: |-
-#         alertmanager:
-#           persistentVolume:
-#             storageClass: gp2
-#         server:
-#           persistentVolume:
-#             storageClass: gp2
-#           service:
-#             type: LoadBalancer
-#     repoURL: https://prometheus-community.github.io/helm-charts
-#     targetRevision: 19.3.3
-#   syncPolicy:
-#     syncOptions:
-#     - ServerSideApply=true
-#     - CreateNamespace=true
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: prometheus-operator
+  name: stable
   namespace: argocd
 spec:
   destination:
@@ -42,9 +11,65 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    chart: prometheus-operator
+    chart: kube-prometheus-stack
+    helm:
+      values: |-
+        defaultRules:
+          rules:
+            etcd: false
+            kubeScheduler: false
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        grafana:
+          adminPassword: test123
+          service:
+            annotations:
+              service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+              service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+            type: LoadBalancer
+          extraExposePorts:
+            - name: https
+              port: 443
+              targetPort: 3000
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          persistence:
+            type: pvc
+            enabled: true
+            storageClassName: gp2
+            accessModes:
+              - ReadWriteOnce
+            size: 20Gi
+        prometheus:
+          prometheusSpec:
+            retention: 31d
+            retentionSize: "20GB"
+            resources:
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 200m
+                memory: 256Mi
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: gp2
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 30Gi
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 9.3.1
+    targetRevision: 19.3.0
   syncPolicy:
     syncOptions:
     - ServerSideApply=true

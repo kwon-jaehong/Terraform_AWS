@@ -40,7 +40,7 @@ kind: ServiceMonitor
 metadata:
   name: example-app
   labels:
-    release: kube-prometheus-stack
+    release: stable
 spec:
   selector:
     matchLabels:

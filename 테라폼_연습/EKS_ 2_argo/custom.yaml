@@ -1,0 +1,61 @@
+# https://oflouis.dev/sw_development/devops/aws-eks-monitoring-kube-prometheus-stack/
+# 참고자료
+defaultRules:
+  rules:
+    etcd: false
+    kubeScheduler: false
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+alertmanager:
+  service:
+    type: NodePort
+grafana:
+  adminPassword: test123
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+    type: LoadBalancer
+  extraExposePorts:
+    - name: https
+      port: 443
+      targetPort: 3000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: gp2
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+prometheus:
+  service:
+    type: NodePort
+  prometheusSpec:
+    retention: 10d
+    retentionSize: "45GB"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
