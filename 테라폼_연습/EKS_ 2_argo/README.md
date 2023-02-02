@@ -29,21 +29,12 @@ https://blog.container-solutions.com/prometheus-operator-beginners-guide
 kubectl run -i --tty curl --rm --image=alpine/curl --restart=Never -- /bin/sh
 
 
---------------------------------
-https://github.com/helm/charts/issues/19928
-
-Error: INSTALLATION FAILED: failed to create resource: Internal error occurred: failed calling webhook "prometheusrulemutate.monitoring.coreos.com": Post "https://stable-kube-prometheus-sta-operator.monitoring.svc:443/admission-prometheusrules/validate?timeout=10s": x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "nil1")
- ✘ ⚡ root@ubuntu2  /home/mrjaehong/Terraform_AWS/테라폼_연습/EKS_ 2_argo   master ±  helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml --version 16.10.0 -n monitoring
-Error: INSTALLATION FAILED: cannot re-use a name that is still in use
-
 ------------------------------------------------------------
 monitoring
 
 kubectl create namespace argocd
 
-
 kubectl delete namespace argocd
-
 
 ## 쿠버네티스 1.21버젼일 경우 아르고 2.1.15설치 -> 아르고cd 지원 버젼 확인해야됨
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.1.15/manifests/install.yaml
@@ -54,21 +45,13 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 비번 : 
 
-
-
-kubectl create namespace monitoring
-helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml --version 16.10.0 -n monitoring
-helm install stable prometheus-community/kube-prometheus-stack -f ./custom.yaml -n monitoring
-
-
------
+-----------------------------------------
 프로메테우스 설치
-kubectl apply -f ./X-argocd_prometheus_install.yaml    
-아르고 cd로 들어가서 싱크를 맞추어주면 설치 완료됨
 
-cadvisor 설치
+kubectl -n kube-system get cm kube-proxy-config -o yaml |sed 's/metricsBindAddress: 127.0.0.1:10249/metricsBindAddress: 0.0.0.0:10249/' | kubectl apply -f -
 
-kubectl -n monitoring get secret stable-grafana -o jsonpath="{.data.admin-password}" | base64 -d
-kubectl -n monitoring get secret kube-prometheus-stack-grafana -o jsonpath="{.data.admin-user}" | base64 -d
+kubectl -n kube-system patch ds kube-proxy -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"updateTime\":\"`date +'%s'`\"}}}}}"
 
-kubectl patch svc kube-prometheus-stack-prometheus -n monitoring -p '{"spec": {"type": "NodePort"}}'
+!! svc 프로메테우스 서버쪽 갯수 보기 (안되는 버젼은 2개가 연결 되어있엇음)
+-----------------------------------------------------------------
+
