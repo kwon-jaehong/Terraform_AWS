@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: prometheus-nlb
   namespace: monitoring
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
 spec:
   ports:
   - name: pro-web

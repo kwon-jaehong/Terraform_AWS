@@ -82,18 +82,19 @@ resource "aws_eks_node_group" "ocr_node_group" {
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
     # Desired number of worker nodes.
-    desired_size = 3
+    desired_size = 1
 
     # Maximum number of worker nodes.
     max_size = 5
 
     # Minimum number of worker nodes.
-    min_size = 2
+    min_size = 1
   }
 
   # Type of Amazon Machine Image (AMI) associated with the EKS Node Group.
   # Valid values: AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64
-  ami_type = "AL2_x86_64"
+  ami_type = "AL2_x86_64_GPU"
+  # ami_type = "AL2_x86_64"
 
   # Type of capacity associated with the EKS Node Group. 
   # Valid values: ON_DEMAND, SPOT
@@ -109,7 +110,8 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # List of instance types associated with the EKS Node Group
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["t3.medium"]
+  instance_types = ["inf1.2xlarge"]
+  # instance_types = ["t3.medium"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.
   labels = {

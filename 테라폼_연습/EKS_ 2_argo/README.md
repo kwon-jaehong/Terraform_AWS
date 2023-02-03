@@ -28,6 +28,7 @@ https://blog.container-solutions.com/prometheus-operator-beginners-guide
 ## 임시 CURL 이미지
 kubectl run -i --tty curl --rm --image=alpine/curl --restart=Never -- /bin/sh
 
+curl http://192.168.26.157:8081/metrics
 
 ------------------------------------------------------------
 monitoring
@@ -45,13 +46,14 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 비번 : 
 
+kubectl apply -f ./argocd_prometheus_install.yaml
+
 -----------------------------------------
-프로메테우스 설치
+
 
 kubectl -n kube-system get cm kube-proxy-config -o yaml |sed 's/metricsBindAddress: 127.0.0.1:10249/metricsBindAddress: 0.0.0.0:10249/' | kubectl apply -f -
 
 kubectl -n kube-system patch ds kube-proxy -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"updateTime\":\"`date +'%s'`\"}}}}}"
 
-!! svc 프로메테우스 서버쪽 갯수 보기 (안되는 버젼은 2개가 연결 되어있엇음)
 -----------------------------------------------------------------
 

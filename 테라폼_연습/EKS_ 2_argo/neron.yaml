@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app
+        # image: ubuntu:18.04
+        image: 763104351884.dkr.ecr.us-west-2.amazonaws.com/pytorch-inference-neuron:1.12.1-neuron-py38-sdk2.5.0-ubuntu20.04
+        resources:
+          limits:
+            cpu: 4
+            memory: 10Gi
+            # aws.amazon.com/neuron: 1
+            aws.amazon.com/neuroncore: 2
+
+          requests:
+            cpu: "4"
+            memory: 8Gi
