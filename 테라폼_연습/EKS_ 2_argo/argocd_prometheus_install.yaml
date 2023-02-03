@@ -3,7 +3,7 @@ kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: stable
+  name: stack
   namespace: argocd
 spec:
   destination:
@@ -92,7 +92,7 @@ spec:
     helm:
       values: |-
         prometheus:
-          url: http://stable-kube-prometheus-sta-prometheus.monitoring.svc
+          url: http://stack-kube-prometheus-stac-prometheus.monitoring.svc
         rules:
           resource:
             cpu:

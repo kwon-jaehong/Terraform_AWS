@@ -5,9 +5,6 @@ rm ~/.kube/config
 aws eks --region us-east-2 update-kubeconfig --name chunjae_ocr --profile default
 kubectl get nodes 
 ----
-https://www.youtube.com/watch?v=-nUQNFAX5TI
-
-https://www.youtube.com/watch?v=kADwAYTErgA
 
 먼저, 이상적인 오토 스케일링을 하고 싶은면 HPA와 CA가 동반되야 한다
 HPA (파드 생성) -> pod 적재공간 부족할 시 CA(클러스터 생성)
@@ -46,6 +43,7 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 비번 : 
 
+
 kubectl apply -f ./argocd_prometheus_install.yaml
 
 -----------------------------------------
@@ -57,3 +55,4 @@ kubectl -n kube-system patch ds kube-proxy -p "{\"spec\":{\"template\":{\"metada
 
 -----------------------------------------------------------------
 
+kubectl describe node aws-node-wqcfh aws.amazon.com/neuroncore

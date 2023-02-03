@@ -40,7 +40,7 @@ kind: ServiceMonitor
 metadata:
   name: example-app
   labels:
-    release: stable
+    release: stack
 spec:
   selector:
     matchLabels:
