@@ -4,7 +4,7 @@ metadata:
   name: example-app
   namespace: default
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: example-app
@@ -13,21 +13,22 @@ spec:
       labels:
         app: example-app
     spec:
+      ## 포드 스케줄러 작동
+      # schedulerName: my-scheduler
       containers:
       - name: example-app
         # image: ubuntu:20.04
-        image: 763104351884.dkr.ecr.us-west-2.amazonaws.com/pytorch-inference-neuron:1.12.1-neuron-py38-sdk2.5.0-ubuntu20.04
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/temp:0.5
         # command: ["/bin/sleep", "3650d"]
         resources:
           limits:
-            cpu: 2
-            memory: 4Gi
+            cpu: 1
+            memory: 2Gi
             # aws.amazon.com/neuron: 1
-            aws.amazon.com/neuroncore: 2
-
+            aws.amazon.com/neuroncore: 3
           requests:
-            cpu: "2"
-            memory: 4Gi
+            cpu: "1"
+            memory: 2Gi
 ---
 kind: Service
 apiVersion: v1
@@ -39,8 +40,10 @@ spec:
   selector:
     app: example-app
   ports:
-  - name: web
+  - name: metrix
     port: 9000
+  - name: input-api
+    port: 8000
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -53,4 +56,4 @@ spec:
     matchLabels:
       app: example-app
   endpoints:
-  - port: web
+  - port: metrix
