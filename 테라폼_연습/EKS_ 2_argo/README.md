@@ -27,8 +27,9 @@ kubectl run -i --tty curl --rm --image=alpine/curl --restart=Never -- /bin/sh
 
 curl http://192.168.26.157:8081/metrics
 
+
 ------------------------------------------------------------
-monitoring
+
 
 kubectl create namespace argocd
 
@@ -36,16 +37,22 @@ kubectl delete namespace argocd
 
 ## 쿠버네티스 1.21버젼일 경우 아르고 2.1.15설치 -> 아르고cd 지원 버젼 확인해야됨
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.1.15/manifests/install.yaml
+또는
+kubectl apply -n argocd -f ./argocd_install
+
+
 
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+-> 안해도 됨
+
+
 
 아이디 : admin
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 비번 : 
 
 
-kubectl apply -f ./argocd_prometheus_install.yaml
-
+kubectl get service --namespace kube-system k8s-neuron-scheduler -o jsonpath='{.spec.clusterIP}'
 -----------------------------------------
 
 
@@ -55,4 +62,5 @@ kubectl -n kube-system patch ds kube-proxy -p "{\"spec\":{\"template\":{\"metada
 
 -----------------------------------------------------------------
 
-kubectl describe node aws-node-wqcfh aws.amazon.com/neuroncore
+스케쥴러 설정
+https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/index.html

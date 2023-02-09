@@ -91,6 +91,8 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: admin_node_group
       hostNetwork: true
       serviceAccount: k8s-neuron-scheduler
       schedulerName: my-scheduler

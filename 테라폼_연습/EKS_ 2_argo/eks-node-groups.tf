@@ -47,14 +47,76 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
   role = aws_iam_role.chunjae_ocr_service_role.name
 }
 
-## 드디어 EKS 노드그룹 생성 - 천재 OCR 노드 그룹
-resource "aws_eks_node_group" "ocr_node_group" {
+## 프로메테우스,엘라스틱 서치등 관리프로그램을 설치할 노드 그룹
+resource "aws_eks_node_group" "admin_node_group" {
+  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  node_group_name = "admin_node_group"
+  node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
+
+  subnet_ids = [
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
+  ]
+  scaling_config {
+    desired_size = 3
+    max_size = 6
+    min_size = 2
+  }
+  ami_type = "AL2_x86_64"
+  capacity_type = "ON_DEMAND"
+  disk_size = 30
+  force_update_version = false
+  instance_types = ["t3.medium"]
+  labels = {
+    role = "admin_role"
+  }
+  version = "1.21"
+  depends_on = [
+    aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
+    aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
+    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+  ]
+}
+
+# ## api 게이트웨이 자원을 가질 노드 그룹
+# resource "aws_eks_node_group" "apigateway_node_group" {
+#   cluster_name = aws_eks_cluster.chunjae_ocr.name
+#   node_group_name = "apigateway_node_group"
+#   node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
+
+#   subnet_ids = [
+#     aws_subnet.eks_public_1.id,
+#     aws_subnet.eks_public_2.id
+#   ]
+#   scaling_config {
+#     desired_size = 2
+#     max_size = 6
+#     min_size = 2
+#   }
+#   ami_type = "AL2_x86_64"
+#   capacity_type = "ON_DEMAND"
+#   disk_size = 20
+#   force_update_version = false
+#   instance_types = ["t3.small"]
+#   labels = {
+#     role = "apigateway_role"
+#   }
+#   version = "1.21"
+#   depends_on = [
+#     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
+#     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
+#     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+#   ]
+# }
+
+## 뉴런코어(GPU 탑재 노드그룹 생성)
+resource "aws_eks_node_group" "inf_node_group" {
 
   ## 클러스터 네임
   cluster_name = aws_eks_cluster.chunjae_ocr.name
 
   # 노드그룹 이름 지정
-  node_group_name = "ocr_node_group"
+  node_group_name = "inf_node_group"
 
   # Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
   # EKS 노드 그룹에 대한 권한 및 정책 연결
@@ -102,7 +164,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # Disk size in GiB for worker nodes
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 50
+  disk_size = 30
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.
@@ -110,7 +172,7 @@ resource "aws_eks_node_group" "ocr_node_group" {
 
   # List of instance types associated with the EKS Node Group
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["inf1.2xlarge"]
+  instance_types = ["inf1.xlarge"]
   # instance_types = ["t3.medium"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.

@@ -24,6 +24,17 @@ spec:
           enabled: false
         kubeScheduler:
           enabled: false
+        alertmanager:
+          alertmanagerSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
+        prometheusOperator:
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: admin_node_group
+        thanosRuler:
+          thanosRulerSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
         grafana:
           adminPassword: test123
           service:
@@ -51,15 +62,17 @@ spec:
             size: 20Gi
         prometheus:
           prometheusSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
             retention: 31d
             retentionSize: "20GB"
             resources:
               limits:
-                cpu: 500m
-                memory: 512Mi
+                cpu: 1000m
+                memory: 1024Mi
               requests:
-                cpu: 200m
-                memory: 256Mi
+                cpu: 400m
+                memory: 512Mi
             storageSpec:
               volumeClaimTemplate:
                 spec:
@@ -93,6 +106,8 @@ spec:
       values: |-
         prometheus:
           url: http://stack-kube-prometheus-stac-prometheus.monitoring.svc
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group
         rules:
           resource:
             cpu:
@@ -140,3 +155,57 @@ spec:
     syncOptions:
     - ServerSideApply=true
     - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: elasticsearch
+  namespace: argocd
+spec:
+  destination:
+    namespace: elasticsearch
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: elasticsearch
+    helm:
+      values: |-
+        replicas: 1
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group          
+    repoURL: https://helm.elastic.co
+    targetRevision: 7.6.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kibana
+  namespace: argocd
+spec:
+  destination:
+    namespace: elasticsearch
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: kibana
+    helm:
+      values: |-
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group
+        service:
+          type: LoadBalancer
+    repoURL: https://helm.elastic.co
+    targetRevision: 7.6.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---

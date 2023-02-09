@@ -4,7 +4,7 @@ metadata:
   name: example-app
   namespace: default
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: example-app
@@ -14,21 +14,30 @@ spec:
         app: example-app
     spec:
       ## 포드 스케줄러 작동
-      # schedulerName: my-scheduler
+      schedulerName: my-scheduler
       containers:
       - name: example-app
-        # image: ubuntu:20.04
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/temp:0.5
-        # command: ["/bin/sleep", "3650d"]
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/temp:1.8
+        # image: 763104351884.dkr.ecr.us-west-2.amazonaws.com/pytorch-inference-neuron:1.12.1-neuron-py38-sdk2.5.0-ubuntu20.04
+        # command: command: ["/bin/sleep", "3650d"]
+        # command: ["python","myapp.py"]
+        # curl http://localhost:9000
+        command:
+          - /bin/bash
+          - -c
+          - |
+            python myapp.py&
+            source start.sh
+        
         resources:
           limits:
-            cpu: 1
-            memory: 2Gi
+            cpu: 800m
+            memory: 1Gi
             # aws.amazon.com/neuron: 1
-            aws.amazon.com/neuroncore: 3
+            aws.amazon.com/neuroncore: 1
           requests:
-            cpu: "1"
-            memory: 2Gi
+            cpu: 400m
+            memory: 0.8Gi
 ---
 kind: Service
 apiVersion: v1
