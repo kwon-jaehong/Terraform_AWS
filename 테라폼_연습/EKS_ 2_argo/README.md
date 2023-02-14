@@ -61,6 +61,8 @@ kubectl -n kube-system get cm kube-proxy-config -o yaml |sed 's/metricsBindAddre
 kubectl -n kube-system patch ds kube-proxy -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"updateTime\":\"`date +'%s'`\"}}}}}"
 
 -----------------------------------------------------------------
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/default/pods/*/nr" | jq .
 
 스케쥴러 설정
 https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/index.html
+

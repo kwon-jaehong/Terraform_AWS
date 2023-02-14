@@ -54,6 +54,7 @@ spec:
   - name: input-api
     port: 8000
 ---
+## 프로메테우스 메트릭 등록
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

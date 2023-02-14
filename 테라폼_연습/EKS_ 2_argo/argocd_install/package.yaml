@@ -109,6 +109,19 @@ spec:
         nodeSelector:
           eks.amazonaws.com/nodegroup: admin_node_group
         rules:
+          custom:
+            - seriesQuery: 'neuroncore_utilization_ratio{namespace!="",pod!=""}'
+              resources:
+                overrides:
+                  namespace:
+                    resource: namespace
+                  pod: 
+                    resource: pod
+              name:
+                matches: ^(.*)
+                as: "nr"
+              metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>,using="True"}) by (<<.GroupBy>>) / 1000'
+
           resource:
             cpu:
               containerQuery: |

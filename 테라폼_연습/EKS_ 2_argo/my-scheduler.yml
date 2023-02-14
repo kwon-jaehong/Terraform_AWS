@@ -91,7 +91,7 @@ data:
       "apiVersion": "v1",
       "extenders": [
         {
-          "urlPrefix": "http://10.100.218.8:12345",
+          "urlPrefix": "http://10.100.103.50:12345",
           "filterVerb": "filter",
           "bindVerb":   "bind",
           "enableHttps": false,

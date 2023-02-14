@@ -7,7 +7,7 @@
 
 docker run --detach \
 --name gitlab \
---hostname 3.134.218.103 \
+--hostname 3.133.133.67 \
 --publish 80:80 \
 --restart always \
 --volume ./gitlab/data:/var/opt/gitlab \
