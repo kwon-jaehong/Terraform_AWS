@@ -15,3 +15,6 @@ docker run --detach \
 --volume ./gitlab/data:/var/opt/gitlab \
 --volume ./gitlab/backup:/var/opt/gitlab/backups \
 gitlab/gitlab-ce:15.4.6-ce.0
+
+----
+야호
