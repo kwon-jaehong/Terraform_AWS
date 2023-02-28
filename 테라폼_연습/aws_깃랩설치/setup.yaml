@@ -154,9 +154,9 @@
     ###   shell:  docker exec -it gitlab_runner /usr/bin/gitlab-runner unregister --all-runners
 
     - name: 러너 등록
-      shell: docker exec -it gitlab_runner /usr/bin/gitlab-runner register -n --url http://{{hostvars.localhost.terraform_json.git_server_eip}} --registration-token {{hostvars.gitlab_server.gitlab_shared_runner_token.stdout}} --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+      shell: docker exec -it gitlab_runner /usr/bin/gitlab-runner register -n --url http://{{hostvars.localhost.terraform_json.git_server_eip}}  --registration-token  {{hostvars.gitlab_server.gitlab_shared_runner_token.stdout}} --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
       when: runner_count.stdout == "0"
-
+      # gitlab-runner register -n --url http://3.133.133.67/ --registration-token c9Ue-tkpPoQvnnJtNxNZ --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 
 
 
