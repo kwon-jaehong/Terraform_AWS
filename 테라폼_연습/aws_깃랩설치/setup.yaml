@@ -142,6 +142,8 @@
           - /gitlab-runner/config:/etc/gitlab-runner ## 컨피그파일 저장
           - /var/run/docker.sock:/var/run/docker.sock ## 도커데몬 소켓 연동
 
+        # docker run -i -d gitlab/gitlab-runner:ubuntu-v15.5.1 -v /var/run/docker.sock:/var/run/docker.sock -v /gitlab-runner/config:/etc/gitlab-runner
+
     - name: 기존 러너 탐색 (멱등성 보장을 위해 config파일 탐색)
       shell: cat config.toml | grep 'runners' -c
       args:
