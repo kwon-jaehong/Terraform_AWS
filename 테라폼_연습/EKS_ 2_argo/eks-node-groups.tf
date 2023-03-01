@@ -70,7 +70,7 @@ resource "aws_eks_node_group" "admin_node_group" {
   labels = {
     role = "admin_role"
   }
-  version = "1.21"
+  version = var.KUBE_VERSION
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
@@ -78,36 +78,36 @@ resource "aws_eks_node_group" "admin_node_group" {
   ]
 }
 
-# ## api 게이트웨이 자원을 가질 노드 그룹
-# resource "aws_eks_node_group" "apigateway_node_group" {
-#   cluster_name = aws_eks_cluster.chunjae_ocr.name
-#   node_group_name = "apigateway_node_group"
-#   node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
+## api 게이트웨이 자원을 가질 노드 그룹
+resource "aws_eks_node_group" "apigateway_node_group" {
+  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  node_group_name = "apigateway_node_group"
+  node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
 
-#   subnet_ids = [
-#     aws_subnet.eks_public_1.id,
-#     aws_subnet.eks_public_2.id
-#   ]
-#   scaling_config {
-#     desired_size = 2
-#     max_size = 6
-#     min_size = 2
-#   }
-#   ami_type = "AL2_x86_64"
-#   capacity_type = "ON_DEMAND"
-#   disk_size = 20
-#   force_update_version = false
-#   instance_types = ["t3.small"]
-#   labels = {
-#     role = "apigateway_role"
-#   }
-#   version = "1.21"
-#   depends_on = [
-#     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
-#     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
-#     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
-#   ]
-# }
+  subnet_ids = [
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
+  ]
+  scaling_config {
+    desired_size = 2
+    max_size = 6
+    min_size = 2
+  }
+  ami_type = "AL2_x86_64"
+  capacity_type = "ON_DEMAND"
+  disk_size = 20
+  force_update_version = false
+  instance_types = ["t3.medium"]
+  labels = {
+    role = "apigateway_role"
+  }
+  version = var.KUBE_VERSION
+  depends_on = [
+    aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
+    aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
+    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+  ]
+}
 
 ## 뉴런코어(GPU 탑재 노드그룹 생성)
 resource "aws_eks_node_group" "inf_node_group" {
@@ -144,13 +144,13 @@ resource "aws_eks_node_group" "inf_node_group" {
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
     # Desired number of worker nodes.
-    desired_size = 1
+    desired_size = 2
 
     # Maximum number of worker nodes.
     max_size = 5
 
     # Minimum number of worker nodes.
-    min_size = 1
+    min_size = 2
   }
 
   # Type of Amazon Machine Image (AMI) associated with the EKS Node Group.
@@ -181,7 +181,7 @@ resource "aws_eks_node_group" "inf_node_group" {
   }
 
   # Kubernetes version
-  version = "1.21"
+  version = var.KUBE_VERSION
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.

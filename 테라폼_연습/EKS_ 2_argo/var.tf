@@ -12,3 +12,8 @@ variable "EKS_NAME" {
     type = string
     default = "chunjae_ocr"
 }
+
+variable "KUBE_VERSION" {
+    type = string
+    default = "1.22"
+}

@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: application
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: api-gateway
+  template:
+    metadata:
+      labels:
+        application: api-gateway
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: apigateway_node_group
+      containers:
+      - name: api-gateway
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:12
+        resources:
+          limits:
+            cpu: 1500m
+            memory: 2.0Gi
+          requests:
+            cpu: 1000m
+            memory: 1.0Gi
+        env:
+          - name: layout_analysis_url
+            value: http://layout-analysis.application.svc:8081
+          - name: character_detection_url
+            value: http://character-detection.application.svc:8081
+          - name: character_recognition_url
+            value: http://character-recognition.application.svc:8081
+          - name: image_embedding_url
+            value: http://image-embedding.application.svc:8081
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: api-gateway
+  namespace: application
+  labels:
+    application: api-gateway
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-0c0d3c463bb354333,eipalloc-0e283700bbacd7a8e"
+    ## 이렇게하면 한쪽으로만 들어감
+
+spec:
+  type: LoadBalancer
+  selector:
+    application: api-gateway
+  ports:
+  - name: html
+    port: 80
+    targetPort: 80
+---
+
+## 프로메테우스 메트릭 등록
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: api-gateway
+#   labels:
+#     release: stack
+# spec:
+#   selector:
+#     matchLabels:
+#       app: api-gateway
+#   endpoints:
+#   - port: metrix

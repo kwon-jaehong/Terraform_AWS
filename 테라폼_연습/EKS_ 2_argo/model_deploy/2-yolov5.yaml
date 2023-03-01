@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: layout-analysis
+  namespace: application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: layout-analysis
+  template:
+    metadata:
+      labels:
+        application: layout-analysis
+    spec:
+      ## 포드 스케줄러 작동
+      schedulerName: my-scheduler
+      ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
+      # nodeSelector:
+      #   eks.amazonaws.com/nodegroup: inf_node_group
+      containers:
+      - name: layout-analysis
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:4 
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2.0Gi
+            # aws.amazon.com/neuron: 1
+            aws.amazon.com/neuroncore: 1
+          requests:
+            cpu: 800m
+            memory: 1.0Gi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: layout-analysis
+  namespace: application
+  labels:
+    application: layout-analysis
+spec:
+  selector:
+    application: layout-analysis
+  ports:
+  - name: html
+    port: 8081
+---
+
+## 프로메테우스 메트릭 등록
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: api-gateway
+#   labels:
+#     release: stack
+# spec:
+#   selector:
+#     matchLabels:
+#       app: api-gateway
+#   endpoints:
+#   - port: metrix
