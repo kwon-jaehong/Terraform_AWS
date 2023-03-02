@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: layout-analysis
+  name: character-detection
   namespace: application
 spec:
   replicas: 2
   selector:
     matchLabels:
-      application: layout-analysis
+      application: character-detection
   template:
     metadata:
       labels:
-        application: layout-analysis
+        application: character-detection
     spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
@@ -19,13 +19,13 @@ spec:
       # nodeSelector:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
-      - name: layout-analysis
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:5
+      - name: character-detection
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:3
         command:
           - /bin/bash
           - -c
           - |
-            python app.py&
+            python app.py &
             source start.sh
         
         resources:
@@ -41,13 +41,13 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: layout-analysis
+  name: character-detection
   namespace: application
   labels:
-    application: layout-analysis
+    application: character-detection
 spec:
   selector:
-    application: layout-analysis
+    application: character-detection
   ports:
   - name: html
     port: 8081
@@ -58,14 +58,14 @@ spec:
 ## 프로메테우스 메트릭 등록
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
-metadata: 
-  name: layout-analysis
+metadata:
+  name: character-detection
   namespace: application
   labels:
     release: stack
 spec:
   selector:
     matchLabels:
-      application: layout-analysis
+      application: character-detection
   endpoints:
   - port: metrix
