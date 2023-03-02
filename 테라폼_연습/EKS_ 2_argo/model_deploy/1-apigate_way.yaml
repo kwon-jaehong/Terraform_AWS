@@ -49,8 +49,10 @@ metadata:
     application: api-gateway
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
-    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-0c0d3c463bb354333,eipalloc-0e283700bbacd7a8e"
-    ## 이렇게하면 한쪽으로만 들어감
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-0b5cf4d15494bb9cf,eipalloc-0d220274b39d629d1"
+    ## cross zone load 옵션을 줘야 각 ip에 고루 분산됨
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+    
 
 spec:
   type: LoadBalancer

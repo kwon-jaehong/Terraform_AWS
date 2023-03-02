@@ -114,7 +114,7 @@ resource "aws_eks_node_group" "inf_node_group" {
 
   ## 클러스터 네임
   cluster_name = aws_eks_cluster.chunjae_ocr.name
-
+  
   # 노드그룹 이름 지정
   node_group_name = "inf_node_group"
 
