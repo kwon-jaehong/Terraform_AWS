@@ -1,0 +1,35 @@
+---
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
+  ttlSecondsUntilExpired: 240 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
+  limits:
+    resources:
+      cpu: 100 # limit to 100 CPU cores
+  requirements:
+    - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
+      operator: In
+      values: ["spot"]
+    # Include general purpose instance families
+    - key: karpenter.k8s.aws/instance-family
+      operator: In
+      values: [inf1]
+    # Exclude small instance sizes
+    - key: karpenter.k8s.aws/instance-size
+      operator: NotIn
+      values: [nano, micro, small]
+  providerRef:
+    name: my-provider
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: my-provider
+spec:
+  subnetSelector:
+    kubernetes.io/cluster/demo: owned
+  securityGroupSelector:
+    kubernetes.io/cluster/demo: owned
