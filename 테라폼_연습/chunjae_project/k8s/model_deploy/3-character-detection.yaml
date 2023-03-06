@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: character-detection
+  namespace: application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: character-detection
+  template:
+    metadata:
+      labels:
+        application: character-detection
+    spec:
+      ## 포드 스케줄러 작동
+      schedulerName: my-scheduler
+      ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
+      # nodeSelector:
+      #   eks.amazonaws.com/nodegroup: inf_node_group
+      containers:
+      - name: character-detection
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:4
+        command:
+          - /bin/bash
+          - -c
+          - |
+            python app.py &
+            source start.sh
+        
+        resources:
+          limits:
+            cpu: 1200m
+            memory: 2.0Gi
+            # aws.amazon.com/neuron: 1
+            aws.amazon.com/neuroncore: 1
+          requests:
+            cpu: 800m
+            memory: 1.0Gi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: character-detection
+  namespace: application
+  labels:
+    application: character-detection
+spec:
+  selector:
+    application: character-detection
+  ports:
+  - name: html
+    port: 8081
+  - name: metrix
+    port: 9000
+---
+
+## 프로메테우스 메트릭 등록
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: character-detection
+  namespace: application
+  labels:
+    release: stack
+spec:
+  selector:
+    matchLabels:
+      application: character-detection
+  endpoints:
+  - port: metrix

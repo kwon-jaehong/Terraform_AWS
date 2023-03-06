@@ -1,0 +1,224 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: stack
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: kube-prometheus-stack
+    helm:
+      values: |-
+        defaultRules:
+          rules:
+            etcd: false
+            kubeScheduler: false
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        alertmanager:
+          alertmanagerSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
+        prometheusOperator:
+          nodeSelector:
+            eks.amazonaws.com/nodegroup: admin_node_group
+        thanosRuler:
+          thanosRulerSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
+        grafana:
+          adminPassword: test123
+          service:
+            annotations:
+              service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+              service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+            type: LoadBalancer
+          extraExposePorts:
+            - name: https
+              port: 443
+              targetPort: 3000
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          persistence:
+            type: pvc
+            enabled: true
+            storageClassName: gp2
+            accessModes:
+              - ReadWriteOnce
+            size: 20Gi
+        prometheus:
+          prometheusSpec:
+            nodeSelector:
+              eks.amazonaws.com/nodegroup: admin_node_group
+            retention: 31d
+            retentionSize: "20GB"
+            resources:
+              limits:
+                cpu: 1000m
+                memory: 1024Mi
+              requests:
+                cpu: 400m
+                memory: 512Mi
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: gp2
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 30Gi
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 19.3.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: prometheus-adapter
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: prometheus-adapter
+    helm:
+      values: |-
+        prometheus:
+          url: http://stack-kube-prometheus-stac-prometheus.monitoring.svc
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group
+        rules:
+          custom:
+            - seriesQuery: 'neuroncore_utilization_ratio{namespace!="",pod!=""}'
+              resources:
+                overrides:
+                  namespace:
+                    resource: namespace
+                  pod: 
+                    resource: pod
+              name:
+                matches: ^(.*)
+                as: "nr"
+              metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>,using="True"}) by (<<.GroupBy>>) / 1000'
+
+          resource:
+            cpu:
+              containerQuery: |
+                sum by (<<.GroupBy>>) (
+                  rate(container_cpu_usage_seconds_total{container!="",<<.LabelMatchers>>}[3m])
+                )
+              nodeQuery: |
+                sum  by (<<.GroupBy>>) (
+                  rate(node_cpu_seconds_total{mode!="idle",mode!="iowait",mode!="steal",<<.LabelMatchers>>}[3m])
+                )
+              resources:
+                overrides:
+                  node:
+                    resource: node
+                  namespace:
+                    resource: namespace
+                  pod:
+                    resource: pod
+              containerLabel: container
+            memory:
+              containerQuery: |
+                sum by (<<.GroupBy>>) (
+                  avg_over_time(container_memory_working_set_bytes{container!="",<<.LabelMatchers>>}[3m])
+                )
+              nodeQuery: |
+                sum by (<<.GroupBy>>) (
+                  avg_over_time(node_memory_MemTotal_bytes{<<.LabelMatchers>>}[3m])
+                  -
+                  avg_over_time(node_memory_MemAvailable_bytes{<<.LabelMatchers>>}[3m])
+                )
+              resources:
+                overrides:
+                  node:
+                    resource: node
+                  namespace:
+                    resource: namespace
+                  pod:
+                    resource: pod
+              containerLabel: container
+            window: 3m
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 2.13.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: elasticsearch
+  namespace: argocd
+spec:
+  destination:
+    namespace: elasticsearch
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: elasticsearch
+    helm:
+      values: |-
+        replicas: 1
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group          
+    repoURL: https://helm.elastic.co
+    targetRevision: 7.6.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  name: kibana
+  namespace: argocd
+spec:
+  destination:
+    namespace: elasticsearch
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: kibana
+    helm:
+      values: |-
+        nodeSelector:
+          eks.amazonaws.com/nodegroup: admin_node_group
+        service:
+          type: LoadBalancer
+    repoURL: https://helm.elastic.co
+    targetRevision: 7.6.0
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
+---
