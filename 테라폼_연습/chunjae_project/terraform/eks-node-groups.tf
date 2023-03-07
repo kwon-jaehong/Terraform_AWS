@@ -64,7 +64,7 @@ resource "aws_eks_node_group" "admin_node_group" {
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 20
+  disk_size = 50
   force_update_version = false
   # instance_types = ["t3.medium"]  
   instance_types = ["t3.large"]
@@ -72,6 +72,12 @@ resource "aws_eks_node_group" "admin_node_group" {
     role = "admin_role"
   }
   version = var.KUBE_VERSION
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "1h"
+  }
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
@@ -96,13 +102,20 @@ resource "aws_eks_node_group" "apigateway_node_group" {
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 20
+  disk_size = 30
   force_update_version = false
   instance_types = ["t3.medium"]
   labels = {
     role = "apigateway_role"
   }
   version = var.KUBE_VERSION
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "1h"
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
@@ -110,7 +123,7 @@ resource "aws_eks_node_group" "apigateway_node_group" {
   ]
 }
 
-## 뉴런코어(GPU 탑재 노드그룹 생성)
+## 뉴런코어 노드그룹 생성
 resource "aws_eks_node_group" "inf_node_group" {
 
   ## 클러스터 네임
@@ -156,7 +169,7 @@ resource "aws_eks_node_group" "inf_node_group" {
 
   # Disk size in GiB for worker nodes
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 30
+  disk_size = 50
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.
@@ -173,6 +186,12 @@ resource "aws_eks_node_group" "inf_node_group" {
 
   # Kubernetes version
   version = var.KUBE_VERSION
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "1h"
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,

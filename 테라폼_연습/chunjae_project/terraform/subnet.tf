@@ -25,7 +25,7 @@ resource "aws_subnet" "eks_public_1" {
   # . shared 값은 둘 이상의 클러스터가 서브넷을 사용할 수 있도록 허용합니다.
   tags = {
     Name                        = "public-${var.AWS_REGION}a"
-    "kubernetes.io/cluster/${var.EKS_NAME}" = "shared"
+    "kubernetes.io/cluster/${var.EKS_NAME}" = "owned"
     "kubernetes.io/role/elb"    = 1
   }
 }
@@ -38,7 +38,7 @@ resource "aws_subnet" "eks_public_2" {
 
   tags = {
     Name                        =  "public-${var.AWS_REGION}c"
-    "kubernetes.io/cluster/${var.EKS_NAME}" = "shared"
+    "kubernetes.io/cluster/${var.EKS_NAME}" = "owned"
     "kubernetes.io/role/elb"    = 1
   }
 }
@@ -49,7 +49,7 @@ resource "aws_subnet" "eks_private_1" {
   availability_zone = "${var.AWS_REGION}a"
   tags = {
     Name                              = "private-${var.AWS_REGION}a"
-    "kubernetes.io/cluster/${var.EKS_NAME}"       = "shared"
+    "kubernetes.io/cluster/${var.EKS_NAME}"       = "owned"
     "kubernetes.io/role/internal-elb" = 1
   }
 }
@@ -60,7 +60,7 @@ resource "aws_subnet" "eks_private_2" {
   availability_zone = "${var.AWS_REGION}c"
   tags = {
     Name                              = "private-${var.AWS_REGION}c"
-    "kubernetes.io/cluster/${var.EKS_NAME}"       = "shared"
+    "kubernetes.io/cluster/${var.EKS_NAME}"       = "owned"
     "kubernetes.io/role/internal-elb" = 1
   }
 }

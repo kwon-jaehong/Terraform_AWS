@@ -18,7 +18,7 @@ resource "helm_release" "karpenter" {
   name       = "karpenter"
   repository = "https://charts.karpenter.sh"
   chart      = "karpenter"
-  version    = "v0.13.1"
+  version    = "0.16.3"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
@@ -40,7 +40,11 @@ resource "helm_release" "karpenter" {
     value = aws_iam_instance_profile.karpenter.name
   }
 
+  ## 생성 삭제하는데 2시간까지 기다림
+  timeout = 7200
+
   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  
 }
 
 
@@ -55,8 +59,8 @@ resource "helm_release" "prometheus_stack" {
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
   version    = "19.3.0"
-  values = ["${file("../k8s/etc_intsall/prometheus-stack-chart-value.yaml")}"]
-
+  values = ["${file("${var.PATH_HELM_VALUE}/prometheus-stack-chart-value.yaml")}"]
+  timeout = 7200
   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
 }
 
@@ -69,8 +73,8 @@ resource "helm_release" "prometheus_adapter" {
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus-adapter"
   version    = "2.13.0"
-  values = ["${file("../k8s/etc_intsall/prometheus-adapter-chart-value.yaml")}"]
-
+  values = ["${file("${var.PATH_HELM_VALUE}/prometheus-adapter-chart-value.yaml")}"]
+  timeout = 7200
   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
 }
 
@@ -82,8 +86,8 @@ resource "helm_release" "elasticsearch" {
   repository = "https://helm.elastic.co"
   chart      = "elasticsearch"
   version    = "7.6.0"
-  values = ["${file("../k8s/etc_intsall/elasticsearch-chart-value.yaml")}"]
-
+  values = ["${file("${var.PATH_HELM_VALUE}/elasticsearch-chart-value.yaml")}"]
+  timeout = 7200
   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
 }
 
@@ -95,7 +99,7 @@ resource "helm_release" "kibana" {
   repository = "https://helm.elastic.co"
   chart      = "kibana"
   version    = "7.6.0"
-  values = ["${file("../k8s/etc_intsall/kibana-chart-value.yaml")}"]
-
+  values = ["${file("${var.PATH_HELM_VALUE}/kibana-chart-value.yaml")}"]
+  timeout = 7200
   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
 }

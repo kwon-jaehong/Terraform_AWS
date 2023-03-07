@@ -1,27 +1,27 @@
----
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
   name: default
 spec:
   ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
-  ttlSecondsUntilExpired: 1200 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
+  ttlSecondsUntilExpired: 600 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
   limits:
     resources:
-      cpu: 100 # limit to 100 CPU cores
+      cpu: 1000 # limit to 100 CPU cores
       aws.amazon.com/neuron: 100
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
+      # values: ["spot","on-demand"]
+      # values: ["on-demand"]
       values: ["spot"]
     # Include general purpose instance families
     - key: karpenter.k8s.aws/instance-family
       operator: In
       values: [inf1]
-    # Exclude small instance sizes
     - key: karpenter.k8s.aws/instance-size
-      operator: NotIn
-      values: [nano, micro, small]
+      operator: In
+      values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
   providerRef:
     name: my-provider
 ---
@@ -31,18 +31,11 @@ metadata:
   name: my-provider
 spec:
   subnetSelector:
-    kubernetes.io/cluster/demo: owned
+    kubernetes.io/cluster/chunjae_ocr: owned
   securityGroupSelector:
-    kubernetes.io/cluster/demo: owned
+    kubernetes.io/cluster/chunjae_ocr: owned
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
         volumeSize: 40Gi
-        volumeType: gp3
-        deleteOnTermination: true
-
-    - deviceName: /dev/xvdb
-      ebs:
-        volumeType: gp3
-        volumeSize: 30Gi # replace with your required disk size
-        deleteOnTermination: true
+        volumeType: gp2

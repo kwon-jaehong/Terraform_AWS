@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: layout-analysis
+  name: image-embedding
   namespace: application
 spec:
   replicas: 2
   selector:
     matchLabels:
-      application: layout-analysis
+      application: image-embedding
   template:
     metadata:
       labels:
-        application: layout-analysis
+        application: image-embedding
     spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
@@ -19,21 +19,21 @@ spec:
       # nodeSelector:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
-      - name: layout-analysis
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:6
+      - name: image-embedding
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/image_embed:4
         command:
           - /bin/bash
           - -c
           - |
-            python app.py&
+            python app.py &
             source start.sh
         
         resources:
           limits:
-            cpu: 1200m
-            memory: 2.0Gi
-            aws.amazon.com/neuron: 1
-            # aws.amazon.com/neuroncore: 1
+            cpu: 1000m
+            memory: 1.5Gi
+            # aws.amazon.com/neuron: 1
+            aws.amazon.com/neuroncore: 1
           requests:
             cpu: 800m
             memory: 1.0Gi
@@ -41,13 +41,13 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: layout-analysis
+  name: image-embedding
   namespace: application
   labels:
-    application: layout-analysis
+    application: image-embedding
 spec:
   selector:
-    application: layout-analysis
+    application: image-embedding
   ports:
   - name: html
     port: 8081
@@ -58,14 +58,14 @@ spec:
 ## 프로메테우스 메트릭 등록
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
-metadata: 
-  name: layout-analysis
+metadata:
+  name: image-embedding
   namespace: application
   labels:
     release: stack
 spec:
   selector:
     matchLabels:
-      application: layout-analysis
+      application: image-embedding
   endpoints:
   - port: metrix

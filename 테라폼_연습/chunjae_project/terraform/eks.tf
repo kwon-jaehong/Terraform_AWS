@@ -81,4 +81,11 @@ resource "aws_eks_cluster" "chunjae_ocr" {
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_cluster_policy
   ]
+
+  timeouts {
+    create = "2h"
+    update = "2h"
+    delete = "2h"
+  }
+
 }
