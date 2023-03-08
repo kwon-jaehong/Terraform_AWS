@@ -1,20 +1,20 @@
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: default
+  name: karpenter
 spec:
   ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
   ttlSecondsUntilExpired: 600 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
   limits:
     resources:
       cpu: 1000 # limit to 100 CPU cores
-      aws.amazon.com/neuron: 100
+      aws.amazon.com/neuroncore: 100
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
       # values: ["spot","on-demand"]
-      # values: ["on-demand"]
-      values: ["spot"]
+      values: ["on-demand"]
+      # values: ["spot"]
     # Include general purpose instance families
     - key: karpenter.k8s.aws/instance-family
       operator: In

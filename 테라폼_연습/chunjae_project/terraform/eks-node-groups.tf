@@ -60,7 +60,7 @@ resource "aws_eks_node_group" "admin_node_group" {
   scaling_config {
     desired_size = 3
     max_size = 6
-    min_size = 2
+    min_size = 3
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
@@ -96,9 +96,9 @@ resource "aws_eks_node_group" "apigateway_node_group" {
     aws_subnet.eks_public_2.id
   ]
   scaling_config {
-    desired_size = 3
+    desired_size = 2
     max_size = 8
-    min_size = 3
+    min_size = 2
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
@@ -157,9 +157,9 @@ resource "aws_eks_node_group" "inf_node_group" {
   # Configuration block with scaling settings
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
-    desired_size = 2
-    max_size = 2
-    min_size = 2
+    desired_size = 3
+    max_size = 3
+    min_size = 3
   }
 
   # Valid values: AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64
@@ -177,7 +177,7 @@ resource "aws_eks_node_group" "inf_node_group" {
 
   # List of instance types associated with the EKS Node Group
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["inf1.xlarge"]
+  instance_types = ["inf1.2xlarge"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.
   labels = {

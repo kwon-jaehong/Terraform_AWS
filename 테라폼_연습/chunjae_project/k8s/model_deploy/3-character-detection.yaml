@@ -30,13 +30,13 @@ spec:
         
         resources:
           limits:
-            cpu: 1200m
-            memory: 2.0Gi
+            cpu: 1500m
+            memory: 800Mi
             # aws.amazon.com/neuron: 1
             aws.amazon.com/neuroncore: 1
           requests:
-            cpu: 800m
-            memory: 1.0Gi
+            cpu: 1000m
+            memory: 500Mi
 ---
 kind: Service
 apiVersion: v1
