@@ -4,7 +4,7 @@ metadata:
   name: character-recognition
   namespace: application
 spec:
-  replicas: 3
+  replicas: 8
   selector:
     matchLabels:
       application: character-recognition
@@ -30,13 +30,13 @@ spec:
         
         resources:
           limits:
-            cpu: 900m
-            memory: 800Mi
+            cpu: 1500m
+            memory: 2500Mi
             # aws.amazon.com/neuron: 1
-            aws.amazon.com/neuroncore: 2
+            aws.amazon.com/neuroncore: 1
           requests:
-            cpu: 900m
-            memory: 500Mi
+            cpu: 1000m
+            memory: 1000Mi
 ---
 kind: Service
 apiVersion: v1

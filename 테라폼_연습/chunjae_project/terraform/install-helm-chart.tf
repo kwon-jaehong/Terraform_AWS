@@ -11,41 +11,41 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "karpenter" {
-  namespace        = "karpenter"
-  create_namespace = true
+# resource "helm_release" "karpenter" {
+#   namespace        = "karpenter"
+#   create_namespace = true
 
-  name       = "karpenter"
-  repository = "https://charts.karpenter.sh"
-  chart      = "karpenter"
-  version    = "0.16.3"
+#   name       = "karpenter"
+#   repository = "https://charts.karpenter.sh"
+#   chart      = "karpenter"
+#   version    = "0.16.3"
 
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.karpenter_controller.arn
-  }
+#   set {
+#     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+#     value = aws_iam_role.karpenter_controller.arn
+#   }
 
-  set {
-    name  = "clusterName"
-    value = aws_eks_cluster.chunjae_ocr.id
-  }
+#   set {
+#     name  = "clusterName"
+#     value = aws_eks_cluster.chunjae_ocr.id
+#   }
 
-  set {
-    name  = "clusterEndpoint"
-    value = aws_eks_cluster.chunjae_ocr.endpoint
-  }
+#   set {
+#     name  = "clusterEndpoint"
+#     value = aws_eks_cluster.chunjae_ocr.endpoint
+#   }
 
-  set {
-    name  = "aws.defaultInstanceProfile"
-    value = aws_iam_instance_profile.karpenter.name
-  }
+#   set {
+#     name  = "aws.defaultInstanceProfile"
+#     value = aws_iam_instance_profile.karpenter.name
+#   }
 
-  ## 생성 삭제하는데 2시간까지 기다림
-  timeout = 7200
+#   ## 생성 삭제하는데 2시간까지 기다림
+#   timeout = 7200
 
-  depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+#   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
   
-}
+# }
 
 
 ##################################

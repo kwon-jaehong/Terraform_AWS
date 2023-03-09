@@ -114,16 +114,16 @@ resource "kubectl_manifest" "flunedtd_ds" {
 
 
 ## 카펜터 프로비저너 설치
-data "kubectl_file_documents" "karpenter_provisioner" {
-  content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
-}
-resource "kubectl_manifest" "karpenter_provisioner" {
-    for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
-    yaml_body = each.value
-    depends_on = [
-      kubectl_manifest.neuron_my_scheduler
-    ]
-}
+# data "kubectl_file_documents" "karpenter_provisioner" {
+#   content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
+# }
+# resource "kubectl_manifest" "karpenter_provisioner" {
+#     for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
+#     yaml_body = each.value
+#     depends_on = [
+#       kubectl_manifest.neuron_my_scheduler
+#     ]
+# }
 
 
 
@@ -135,6 +135,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: application
+  labels:
+    istio-injection: enabled
 EOF
 }
 
@@ -147,6 +149,7 @@ resource "kubectl_manifest" "api_gateway" {
     for_each  = data.kubectl_file_documents.api_gateway.manifests
     yaml_body = each.value
 
+    ## 나중에 이스티오 추가 해줘야할듯
     depends_on = [
       kubectl_manifest.application_namespace_create,
       aws_eks_node_group.apigateway_node_group

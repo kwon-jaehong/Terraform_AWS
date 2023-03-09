@@ -24,6 +24,7 @@ kubectl run -i --tty curl --rm --image=alpine/curl --restart=Never -- /bin/sh
 
 curl http://192.168.26.157:8081/metrics
 
+nslookup character-detection.application.svc.cluster.local
 
 ------------------------------------------------------------
 

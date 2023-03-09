@@ -17,15 +17,12 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:17
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:20
         resources:
-          limits:
-            cpu: 1500m
-            memory: 1500Mi
           requests:
-            cpu: 800m
+            cpu: 1000m
             # memory: 0.8Gi
-            memory: 800Mi
+            memory: 1000Mi
         env:
           - name: layout_analysis_url
             value: http://layout-analysis.application.svc:8081
