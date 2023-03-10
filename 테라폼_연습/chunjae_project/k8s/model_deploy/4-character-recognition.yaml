@@ -4,7 +4,7 @@ metadata:
   name: character-recognition
   namespace: application
 spec:
-  replicas: 8
+  replicas: 4
   selector:
     matchLabels:
       application: character-recognition
@@ -15,25 +15,38 @@ spec:
     spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup 
+                operator: NotIn
+                values:
+                - inf_node_group
+
       ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
       # nodeSelector:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:9
+        env:
+          - name: NEURON_RT_VISIBLE_CORES
+            value: 0,1,2
         command:
           - /bin/bash
           - -c
           - |
             python app.py &
-            source start.sh
-        
+            source start.sh        
         resources:
           limits:
             cpu: 1500m
             memory: 2500Mi
-            # aws.amazon.com/neuron: 1
-            aws.amazon.com/neuroncore: 1
+            aws.amazon.com/neuron: 1
+            # aws.amazon.com/neuroncore: 2
           requests:
             cpu: 1000m
             memory: 1000Mi

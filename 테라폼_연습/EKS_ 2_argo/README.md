@@ -26,7 +26,7 @@ https://blog.container-solutions.com/prometheus-operator-beginners-guide
 kubectl run -i --tty curl --rm --image=alpine/curl --restart=Never -- /bin/sh
 
 curl http://192.168.26.157:8081/metrics
-
+curl http://productpage.default.svc
 
 ------------------------------------------------------------
 

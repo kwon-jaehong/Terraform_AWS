@@ -11,41 +11,47 @@ provider "helm" {
   }
 }
 
-# resource "helm_release" "karpenter" {
-#   namespace        = "karpenter"
-#   create_namespace = true
+resource "helm_release" "karpenter" {
+  namespace        = "karpenter"
+  create_namespace = true
 
-#   name       = "karpenter"
-#   repository = "https://charts.karpenter.sh"
-#   chart      = "karpenter"
-#   version    = "0.16.3"
+  name       = "karpenter"
+  repository = "https://charts.karpenter.sh"
+  chart      = "karpenter"
+  version    = "0.16.3"
 
-#   set {
-#     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-#     value = aws_iam_role.karpenter_controller.arn
-#   }
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = aws_iam_role.karpenter_controller.arn
+  }
 
-#   set {
-#     name  = "clusterName"
-#     value = aws_eks_cluster.chunjae_ocr.id
-#   }
+  set {
+    name  = "clusterName"
+    value = aws_eks_cluster.chunjae_ocr.id
+  }
 
-#   set {
-#     name  = "clusterEndpoint"
-#     value = aws_eks_cluster.chunjae_ocr.endpoint
-#   }
+  set {
+    name  = "clusterEndpoint"
+    value = aws_eks_cluster.chunjae_ocr.endpoint
+  }
 
-#   set {
-#     name  = "aws.defaultInstanceProfile"
-#     value = aws_iam_instance_profile.karpenter.name
-#   }
-
-#   ## 생성 삭제하는데 2시간까지 기다림
-#   timeout = 7200
-
-#   depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  set {
+    name  = "aws.defaultInstanceProfile"
+    value = aws_iam_instance_profile.karpenter.name
+  }
   
-# }
+  set {
+    name  = "nodeSelector.eks\\.amazonaws\\.com/nodegroup"
+    value = "admin_node_group"
+  }
+  
+
+  ## 생성 삭제하는데 2시간까지 기다림
+  timeout = 7200
+
+  depends_on = [aws_eks_node_group.admin_node_group]
+  
+}
 
 
 ##################################
@@ -61,7 +67,7 @@ resource "helm_release" "prometheus_stack" {
   version    = "19.3.0"
   values = ["${file("${var.PATH_HELM_VALUE}/prometheus-stack-chart-value.yaml")}"]
   timeout = 7200
-  depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  depends_on = [aws_eks_node_group.admin_node_group]
 }
 
 
@@ -74,8 +80,7 @@ resource "helm_release" "prometheus_adapter" {
   chart      = "prometheus-adapter"
   version    = "2.13.0"
   values = ["${file("${var.PATH_HELM_VALUE}/prometheus-adapter-chart-value.yaml")}"]
-  timeout = 7200
-  depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  depends_on = [aws_eks_node_group.admin_node_group]
 }
 
 resource "helm_release" "elasticsearch" {
@@ -87,8 +92,7 @@ resource "helm_release" "elasticsearch" {
   chart      = "elasticsearch"
   version    = "7.6.0"
   values = ["${file("${var.PATH_HELM_VALUE}/elasticsearch-chart-value.yaml")}"]
-  timeout = 7200
-  depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  depends_on = [aws_eks_node_group.admin_node_group]
 }
 
 resource "helm_release" "kibana" {
@@ -100,6 +104,55 @@ resource "helm_release" "kibana" {
   chart      = "kibana"
   version    = "7.6.0"
   values = ["${file("${var.PATH_HELM_VALUE}/kibana-chart-value.yaml")}"]
-  timeout = 7200
-  depends_on = [aws_eks_node_group.admin_node_group,aws_eks_node_group.apigateway_node_group]
+  depends_on = [aws_eks_node_group.admin_node_group]
+}
+
+
+
+## istio
+resource "helm_release" "istio_base" {
+  name = "my-istio-base-release"
+
+  repository       = "https://istio-release.storage.googleapis.com/charts"
+  chart            = "base"
+  namespace        = "istio-system"
+  create_namespace = true
+  version          = "1.17.1"
+
+  set {
+    name  = "global.istioNamespace"
+    value = "istio-system"
+  }
+  depends_on = [
+    aws_eks_node_group.admin_node_group
+  ]
+}
+resource "helm_release" "istiod" {
+  name = "my-istiod-release"
+
+  repository       = "https://istio-release.storage.googleapis.com/charts"
+  chart            = "istiod"
+  namespace        = "istio-system"
+  create_namespace = true
+  version          = "1.17.1"
+  values = ["${file("${var.PATH_HELM_VALUE}/istiod-chart-value.yaml")}"]
+
+
+  depends_on = [helm_release.istio_base]
+}
+
+resource "helm_release" "istio_gateway" {
+  name = "gateway"
+
+  repository       = "https://istio-release.storage.googleapis.com/charts"
+  chart            = "gateway"
+  namespace        = "istio-ingress"
+  create_namespace = true
+  version          = "1.17.1"
+  values = ["${file("${var.PATH_HELM_VALUE}/istio-gateway-chart-value.yaml")}"]
+
+  depends_on = [
+    helm_release.istio_base,
+    helm_release.istiod
+  ]
 }

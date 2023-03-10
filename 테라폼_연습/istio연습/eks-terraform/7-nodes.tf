@@ -41,7 +41,7 @@ resource "aws_eks_node_group" "private_nodes" {
 
   # Single subnet to avoid data transfer charges while testing.
   subnet_ids = [
-    aws_subnet.private_us_east_1a.id
+    aws_subnet.private_1a.id
   ]
 
   capacity_type  = "ON_DEMAND"

@@ -14,7 +14,11 @@ rules:
       name:
         matches: ^(.*)
         as: "nr"
-      metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>,using="True"}) by (<<.GroupBy>>) / 1000'
+      metricsQuery: 'sum(avg_over_time(<<.Series>>{<<.LabelMatchers>>,using="True"}[15s])) by (<<.GroupBy>>) / 1000'
+      # metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>,using="True"}) by (<<.GroupBy>>) / 1000'
+      # sum(avg_over_time(neuroncore_utilization_ratio{namespace!="",pod!="",using="True"}[30s])) by (name,pod) / 1000
+
+
 
   resource:
     cpu:

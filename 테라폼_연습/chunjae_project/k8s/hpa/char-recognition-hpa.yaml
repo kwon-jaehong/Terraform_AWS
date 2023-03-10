@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: character-recognition
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 4
+  maxReplicas: 50
   metrics:
   # use a "Pods" metric, which takes the average of the
   # given metric across all pods controlled by the autoscaling target
@@ -22,7 +22,7 @@ spec:
         # target 500 milli-requests per second,
         # which is 1 request every two seconds
         type: Utilization
-        averageValue: 100m
+        averageValue: 80m
         
   # - type: Resource
   #   resource:

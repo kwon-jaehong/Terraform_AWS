@@ -19,6 +19,9 @@ kind: Namespace
 metadata:
   name: argocd
 EOF
+
+depends_on = [aws_eks_node_group.admin_node_group]
+
 }
 
 
@@ -31,8 +34,7 @@ resource "kubectl_manifest" "argo_install" {
     for_each  = data.kubectl_file_documents.argo_install.manifests
     yaml_body = each.value
     depends_on = [
-        kubectl_manifest.argocd_namespace_create,
-        aws_eks_node_group.admin_node_group
+        kubectl_manifest.argocd_namespace_create
     ]
 }
 
@@ -113,17 +115,44 @@ resource "kubectl_manifest" "flunedtd_ds" {
 
 
 
-## 카펜터 프로비저너 설치
-# data "kubectl_file_documents" "karpenter_provisioner" {
-#   content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
-# }
-# resource "kubectl_manifest" "karpenter_provisioner" {
-#     for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
-#     yaml_body = each.value
-#     depends_on = [
-#       kubectl_manifest.neuron_my_scheduler
-#     ]
-# }
+# 카펜터 프로비저너 설치
+data "kubectl_file_documents" "karpenter_provisioner" {
+  content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
+}
+resource "kubectl_manifest" "karpenter_provisioner" {
+    for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
+    yaml_body = each.value
+    depends_on = [
+      kubectl_manifest.neuron_my_scheduler
+    ]
+}
+
+
+
+## istio용 프로메테우스
+data "kubectl_file_documents" "istio_prometheus" {
+  content = file("${var.PATH_ETC}/istio-prometheus.yaml")
+}
+resource "kubectl_manifest" "istio_prometheus" {
+    for_each  = data.kubectl_file_documents.istio_prometheus.manifests
+    yaml_body = each.value
+    depends_on = [
+      helm_release.istio_gateway
+    ]
+}
+
+## istio- kiali
+data "kubectl_file_documents" "istio_kiali" {
+  content = file("${var.PATH_ETC}/istio-kiali.yaml")
+}
+resource "kubectl_manifest" "istio_kiali" {
+    for_each  = data.kubectl_file_documents.istio_kiali.manifests
+    yaml_body = each.value
+    depends_on = [
+      helm_release.istio_gateway
+    ]
+}
+
 
 
 
@@ -152,7 +181,7 @@ resource "kubectl_manifest" "api_gateway" {
     ## 나중에 이스티오 추가 해줘야할듯
     depends_on = [
       kubectl_manifest.application_namespace_create,
-      aws_eks_node_group.apigateway_node_group
+      helm_release.istio_gateway
     ]
 }
 

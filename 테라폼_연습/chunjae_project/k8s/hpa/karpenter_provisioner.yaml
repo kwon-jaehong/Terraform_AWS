@@ -3,25 +3,25 @@ kind: Provisioner
 metadata:
   name: karpenter
 spec:
-  ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
-  ttlSecondsUntilExpired: 600 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
+  ttlSecondsAfterEmpty: 300 # 아무런 워커노드 없을때 6분까지 대기하다가 삭제 
+  ttlSecondsUntilExpired: 18000 #노드 5시간뒤 삭제
   limits:
     resources:
-      cpu: 1000 # limit to 100 CPU cores
-      aws.amazon.com/neuroncore: 100
+      # cpu: 1000 # limit to 100 CPU cores
+      aws.amazon.com/neuron: 50
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
-      # values: ["spot","on-demand"]
-      values: ["on-demand"]
+      values: ["spot","on-demand"]
+      # values: ["on-demand"]
       # values: ["spot"]
-    # Include general purpose instance families
     - key: karpenter.k8s.aws/instance-family
       operator: In
       values: [inf1]
     - key: karpenter.k8s.aws/instance-size
       operator: In
-      values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
+      values: [xlarge] # x라지, 2x라지만 사용
+      # values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
   providerRef:
     name: my-provider
 ---

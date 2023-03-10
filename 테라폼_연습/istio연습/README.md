@@ -1,3 +1,6 @@
-# Istio Service Mesh Tutorial
+aws eks --region us-east-2 update-kubeconfig --name demo --profile default
 
-You can find tutorial [here](https://youtu.be/H4YIKwAQMKk).
+
+
+아이피정보 나옴
+dig +short <도메인 네임>
