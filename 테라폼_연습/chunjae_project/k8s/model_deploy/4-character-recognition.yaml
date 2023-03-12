@@ -43,7 +43,7 @@ spec:
             source start.sh        
         resources:
           limits:
-            cpu: 1500m
+            cpu: 3000m
             memory: 2500Mi
             aws.amazon.com/neuron: 1
             # aws.amazon.com/neuroncore: 2

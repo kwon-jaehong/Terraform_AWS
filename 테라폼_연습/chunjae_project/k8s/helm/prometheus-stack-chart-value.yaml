@@ -45,6 +45,10 @@ grafana:
       - ReadWriteOnce
     size: 20Gi
 prometheus:
+  
+  service:
+    type: LoadBalancer
+
   prometheusSpec:
     nodeSelector:
       eks.amazonaws.com/nodegroup: admin_node_group

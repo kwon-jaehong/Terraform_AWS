@@ -6,6 +6,8 @@
 
 aws 계정에서 처음 스팟 인스턴스를 사용하는 경우에만
 aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+
+ssh -i my_ec2_private_key.pem ec2-user@ec2-a-b-c-d.us-west-2.compute.amazonaws.com
 -------------------
 테라폼 쿠버네티스 얌 보디
 https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/kubectl_manifest

@@ -73,17 +73,27 @@ resource "aws_eks_node_group" "admin_node_group" {
   }
   version = var.KUBE_VERSION
 
+
+
   timeouts {
     create = "1h"
     update = "1h"
     delete = "1h"
   }
+
+  remote_access {
+    ec2_ssh_key = "test"
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
   ]
 }
+
+
+
 
 ## api 게이트웨이 자원을 가질 노드 그룹
 resource "aws_eks_node_group" "apigateway_node_group" {
@@ -115,6 +125,11 @@ resource "aws_eks_node_group" "apigateway_node_group" {
     update = "1h"
     delete = "1h"
   }
+
+  remote_access {
+    ec2_ssh_key = "test"
+  }
+
 
   depends_on = [
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
@@ -154,6 +169,9 @@ resource "aws_eks_node_group" "inf_node_group" {
     aws_subnet.eks_public_2.id
   ]
 
+
+
+
   # Configuration block with scaling settings
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
@@ -191,6 +209,10 @@ resource "aws_eks_node_group" "inf_node_group" {
     create = "1h"
     update = "1h"
     delete = "1h"
+  }
+
+  remote_access {
+    ec2_ssh_key = "test"
   }
 
   depends_on = [

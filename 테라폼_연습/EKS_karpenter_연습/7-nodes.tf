@@ -35,21 +35,21 @@ resource "aws_eks_node_group" "private-nodes" {
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    aws_subnet.private-1a.id,
-    aws_subnet.private-1b.id
+    aws_subnet.public-1a.id,
+    aws_subnet.public-1b.id
   ]
 
   capacity_type  = "ON_DEMAND"
   instance_types = ["t3.small"]
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     max_size     = 10
-    min_size     = 0
+    min_size     = 2
   }
-
-  update_config {
-    max_unavailable = 1
+  disk_size = 50
+  remote_access {
+    ec2_ssh_key = "test"
   }
 
   labels = {

@@ -22,7 +22,7 @@ spec:
         # target 500 milli-requests per second,
         # which is 1 request every two seconds
         type: Utilization
-        averageValue: 80m
+        averageValue: 38m
         
   # - type: Resource
   #   resource:

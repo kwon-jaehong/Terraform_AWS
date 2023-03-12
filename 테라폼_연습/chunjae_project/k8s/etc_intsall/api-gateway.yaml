@@ -17,7 +17,7 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:20
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:22
         resources:
           requests:
             cpu: 1000m
