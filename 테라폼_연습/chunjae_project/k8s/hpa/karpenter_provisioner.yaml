@@ -20,7 +20,7 @@ spec:
       values: [inf1]
     - key: karpenter.k8s.aws/instance-size
       operator: In
-      values: [xlarge] # x라지, 2x라지만 사용
+      values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
       # values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
   providerRef:
     name: my-provider
