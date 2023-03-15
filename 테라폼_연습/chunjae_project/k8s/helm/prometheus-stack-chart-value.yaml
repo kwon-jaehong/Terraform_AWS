@@ -57,10 +57,10 @@ prometheus:
     resources:
       limits:
         cpu: 1500m
-        memory: 2048Mi
+        memory: 5120Mi
       requests:
         cpu: 400m
-        memory: 1024Mi
+        memory: 3072Mi
     storageSpec:
       volumeClaimTemplate:
         spec:

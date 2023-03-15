@@ -12,15 +12,15 @@ spec:
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
-      values: ["spot","on-demand"]
+      # values: ["spot","on-demand"]
       # values: ["on-demand"]
-      # values: ["spot"]
+      values: ["spot"]
     - key: karpenter.k8s.aws/instance-family
       operator: In
       values: [inf1]
     - key: karpenter.k8s.aws/instance-size
       operator: In
-      values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
+      values: [xlarge] # x라지, 2x라지만 사용
       # values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
   providerRef:
     name: my-provider
