@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: api-gateway
+  template:
+    metadata:
+      labels:
+        application: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:22
+        resources:
+          requests:
+            cpu: 1000m
+            # memory: 0.8Gi
+            memory: 1000Mi
