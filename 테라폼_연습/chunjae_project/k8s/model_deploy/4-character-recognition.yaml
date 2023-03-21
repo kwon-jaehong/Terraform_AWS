@@ -31,7 +31,7 @@ spec:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:11
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:13
         env:
           - name: NEURON_RT_VISIBLE_CORES
             value: 0,1,2
@@ -39,7 +39,7 @@ spec:
           - /bin/bash
           - -c
           - |
-            ./env/bin/python app.py &
+            ./env/bin/python rabbitmq_rec.py &
             source start.sh        
         resources:
           limits:
@@ -50,6 +50,11 @@ spec:
           requests:
             cpu: 3000m
             memory: 2500Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
 ---
 kind: Service
 apiVersion: v1

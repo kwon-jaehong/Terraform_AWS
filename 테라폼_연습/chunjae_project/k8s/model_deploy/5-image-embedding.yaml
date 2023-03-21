@@ -20,12 +20,12 @@ spec:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: image-embedding
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/image_embed:6
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/image_embed:8
         command:
           - /bin/bash
           - -c
           - |
-            ./env/bin/python app.py &
+            ./env/bin/python rabbitmq_emb.py &
             source start.sh
         
         resources:
@@ -37,6 +37,11 @@ spec:
           requests:
             cpu: 400m
             memory: 300Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
 ---
 kind: Service
 apiVersion: v1

@@ -16,7 +16,7 @@ aws eks --region us-east-2 update-kubeconfig --name demo --profile default
 
 helm install rabbitmq my-repo/rabbitmq-cluster-operator
 kubectl apply -f rabbit.yaml
-curl -u momo:momo production-rabbitmqcluster.default.svc.cluster.local:15672/api/overview
+curl -u chunjae:chunjae production-rabbitmqcluster.default.svc.cluster.local:15672/api/overview
 
 
 helm install redis bitnami/redis --set auth.enabled=false

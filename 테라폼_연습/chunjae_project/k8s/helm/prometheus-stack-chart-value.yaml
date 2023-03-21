@@ -51,16 +51,16 @@ prometheus:
 
   prometheusSpec:
     nodeSelector:
-      eks.amazonaws.com/nodegroup: admin_node_group
+      eks.amazonaws.com/nodegroup: prometheus_node_group
     retention: 31d
     retentionSize: "20GB"
     resources:
       limits:
         cpu: 1500m
-        memory: 5120Mi
+        memory: 6144Mi
       requests:
         cpu: 400m
-        memory: 3072Mi
+        memory: 4096Mi
     storageSpec:
       volumeClaimTemplate:
         spec:

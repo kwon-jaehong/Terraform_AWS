@@ -1,0 +1,32 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: production-rabbitmqcluster
+  namespace: messagesys
+spec:
+  replicas: 3
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+  rabbitmq:
+    additionalConfig: |
+            log.console.level = info
+            channel_max = 1700
+            default_user= chunjae 
+            default_pass = chunjae
+            default_user_tags.administrator = true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/nodegroup
+            operator: In
+            values:
+            - admin_node_group
+  service:
+    type: LoadBalancer

@@ -1,0 +1,8 @@
+master:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: admin_node_group
+replica:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: admin_node_group
+auth:
+  enabled: false

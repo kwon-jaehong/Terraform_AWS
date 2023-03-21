@@ -1,0 +1,6 @@
+clusterOperator:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: admin_node_group
+msgTopologyOperator:
+  nodeSelector:
+    eks.amazonaws.com/nodegroup: admin_node_group

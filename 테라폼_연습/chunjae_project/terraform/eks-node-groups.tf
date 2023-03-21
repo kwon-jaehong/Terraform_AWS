@@ -58,16 +58,16 @@ resource "aws_eks_node_group" "admin_node_group" {
     aws_subnet.eks_public_2.id
   ]
   scaling_config {
-    desired_size = 4
-    max_size = 6
-    min_size = 4
+    desired_size = 6
+    max_size = 10
+    min_size = 6
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 50
+  disk_size = 40
   force_update_version = false
-  # instance_types = ["t3.medium"]  
-  instance_types = ["t3.large"]
+  instance_types = ["t3.medium"]  
+  # instance_types = ["t3.large"]
   labels = {
     role = "admin_role"
   }
@@ -91,6 +91,50 @@ resource "aws_eks_node_group" "admin_node_group" {
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
   ]
 }
+
+
+## 프로메테우스를 관리할 노드 그룹, (램 많이 잡아먹음)
+resource "aws_eks_node_group" "prometheus_node_group" {
+  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  node_group_name = "prometheus_node_group"
+  node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
+
+  subnet_ids = [
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
+  ]
+  scaling_config {
+    desired_size = 1
+    max_size = 5
+    min_size = 1
+  }
+  ami_type = "AL2_x86_64"
+  capacity_type = "ON_DEMAND"
+  disk_size = 40
+  force_update_version = false
+  instance_types = ["t3.large"]
+  labels = {
+    role = "prometheus_role"
+  }
+  version = var.KUBE_VERSION
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "1h"
+  }
+
+  remote_access {
+    ec2_ssh_key = "test"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
+    aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
+    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+  ]
+}
+
 
 
 

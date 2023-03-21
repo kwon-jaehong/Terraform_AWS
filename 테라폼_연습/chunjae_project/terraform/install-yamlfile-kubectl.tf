@@ -170,6 +170,39 @@ EOF
 }
 
 
+
+## messagesys 네임스페이스 생성
+resource "kubectl_manifest" "messagesys_namespace_create" {
+  yaml_body = <<-EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: messagesys
+  labels:
+    istio-injection: enabled
+EOF
+}
+
+
+
+## 레빗mq 클러스터 배포
+data "kubectl_file_documents" "rabbitmq" {
+  content = file("${var.PATH_ETC}/rabbitmq.yaml")
+}
+resource "kubectl_manifest" "rabbitmq" {
+    for_each  = data.kubectl_file_documents.rabbitmq.manifests
+    yaml_body = each.value
+
+    ## 나중에 이스티오 추가 해줘야할듯
+    depends_on = [
+      helm_release.rabbitmq-cluster-operator
+    ]
+}
+
+
+
+
+
 ## api 게이트웨이 설치
 data "kubectl_file_documents" "api_gateway" {
   content = file("${var.PATH_ETC}/api-gateway.yaml")
@@ -180,15 +213,11 @@ resource "kubectl_manifest" "api_gateway" {
 
     ## 나중에 이스티오 추가 해줘야할듯
     depends_on = [
-      kubectl_manifest.application_namespace_create,
+      kubectl_manifest.rabbitmq,
+      helm_release.redis,
       helm_release.istio_gateway
     ]
 }
-
-
-
-
-
 
 
 

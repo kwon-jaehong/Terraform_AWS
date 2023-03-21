@@ -20,12 +20,12 @@ spec:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: layout-analysis
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:8
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:16
         command:
           - /bin/bash
           - -c
           - |
-            ./env/bin/python app.py&
+            ./env/bin/python rabbitmq_yolo.py &
             source start.sh
         
         resources:
@@ -37,6 +37,11 @@ spec:
           requests:
             cpu: 1000m
             memory: 500Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
 ---
 kind: Service
 apiVersion: v1

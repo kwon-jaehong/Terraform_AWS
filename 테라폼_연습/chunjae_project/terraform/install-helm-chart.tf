@@ -67,7 +67,7 @@ resource "helm_release" "prometheus_stack" {
   version    = "19.3.0"
   values = ["${file("${var.PATH_HELM_VALUE}/prometheus-stack-chart-value.yaml")}"]
   timeout = 7200
-  depends_on = [aws_eks_node_group.admin_node_group]
+  depends_on = [aws_eks_node_group.prometheus_node_group]
 }
 
 
@@ -155,4 +155,36 @@ resource "helm_release" "istio_gateway" {
     helm_release.istio_base,
     helm_release.istiod
   ]
+}
+
+
+resource "helm_release" "rabbitmq-cluster-operator" {
+  name = "rabbitmq"
+
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "rabbitmq-cluster-operator"
+  namespace        = "messagesys"
+  create_namespace = true
+  version          = "3.2.7"
+  values = ["${file("${var.PATH_HELM_VALUE}/rabbitmq-cluster-operator-chart-value.yaml")}"]
+
+  depends_on = [aws_eks_node_group.admin_node_group,
+                kubectl_manifest.messagesys_namespace_create,
+                helm_release.istio_gateway]
+}
+
+
+resource "helm_release" "redis" {
+  name = "redis"
+
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "redis"
+  namespace        = "messagesys"
+  create_namespace = true
+  version          = "17.8.6"
+  values = ["${file("${var.PATH_HELM_VALUE}/redis-chart-value.yaml")}"]
+
+  depends_on = [aws_eks_node_group.admin_node_group,
+                kubectl_manifest.messagesys_namespace_create,
+                helm_release.istio_gateway]
 }
