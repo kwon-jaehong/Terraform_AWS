@@ -53,8 +53,8 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:25
-        command: ["/bin/sleep", "3650d"]
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:27
+        # command: ["/bin/sleep", "3650d"]
         resources:
           requests:
             cpu: 1000m

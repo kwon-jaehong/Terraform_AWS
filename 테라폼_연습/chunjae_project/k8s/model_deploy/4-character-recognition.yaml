@@ -31,10 +31,7 @@ spec:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:13
-        env:
-          - name: NEURON_RT_VISIBLE_CORES
-            value: 0,1,2
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:14
         command:
           - /bin/bash
           - -c
@@ -51,6 +48,8 @@ spec:
             cpu: 3000m
             memory: 2500Mi
         env:
+          - name: NEURON_RT_VISIBLE_CORES
+            value: 0,1,2
           - name: redis_host
             value: redis-master.messagesys.svc
           - name: rabbitmq_host

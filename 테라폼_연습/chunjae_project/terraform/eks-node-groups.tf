@@ -219,9 +219,9 @@ resource "aws_eks_node_group" "inf_node_group" {
   # Configuration block with scaling settings
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
-    desired_size = 2
+    desired_size = 3
     max_size = 8
-    min_size = 2
+    min_size = 3
   }
 
   # Valid values: AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64

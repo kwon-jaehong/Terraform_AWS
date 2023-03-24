@@ -20,7 +20,7 @@ spec:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: layout-analysis
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:17
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:19
         command:
           - /bin/bash
           - -c
@@ -30,13 +30,13 @@ spec:
         
         resources:
           limits:
-            cpu: 1400m
-            memory: 1000Mi
+            cpu: 1700m
+            memory: 2000Mi
             # aws.amazon.com/neuron: 1
             aws.amazon.com/neuroncore: 1
           requests:
             cpu: 1000m
-            memory: 500Mi
+            memory: 1500Mi
         env:
           - name: redis_host
             value: redis-master.messagesys.svc
