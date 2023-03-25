@@ -450,7 +450,7 @@ spec:
     rollingUpdate: null
   template:
     nodeSelector:
-      eks.amazonaws.com/nodegroup: admin_node_group
+      eks.amazonaws.com/nodegroup: prometheus_node_group
     metadata:
       labels:
         component: "server"

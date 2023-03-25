@@ -1,8 +1,12 @@
 master:
+  count: 1
+  resources:
+    requests:
+      cpu: 1500m
   nodeSelector:
-    eks.amazonaws.com/nodegroup: admin_node_group
+    eks.amazonaws.com/nodegroup: message_sys_node_group
 replica:
   nodeSelector:
-    eks.amazonaws.com/nodegroup: admin_node_group
+    eks.amazonaws.com/nodegroup: message_sys_node_group
 auth:
   enabled: false

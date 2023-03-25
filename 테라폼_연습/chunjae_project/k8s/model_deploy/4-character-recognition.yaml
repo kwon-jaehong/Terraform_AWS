@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: character-recognition
+  name: character-recognition-neuroncore
   namespace: application
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       application: character-recognition
@@ -16,6 +16,50 @@ spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
 
+      ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: inf_node_group
+      containers:
+      - name: character-recognition
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:15
+        command:
+          - /bin/bash
+          - -c
+          - |
+            ./env/bin/python rabbitmq_rec.py &
+            source start.sh        
+        resources:
+          limits:
+            # cpu: 3000m
+            # memory: 2500Mi
+            # aws.amazon.com/neuron: 1
+            aws.amazon.com/neuroncore: 3
+          # requests:
+          #   cpu: 3000m
+          #   memory: 2500Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: character-recognition-neuron
+  namespace: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: character-recognition
+  template:
+    metadata:
+      labels:
+        application: character-recognition
+    spec:
+      ## 포드 스케줄러 작동
+      schedulerName: my-scheduler
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -25,13 +69,9 @@ spec:
                 operator: NotIn
                 values:
                 - inf_node_group
-
-      ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
-      # nodeSelector:
-      #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:14
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:15
         command:
           - /bin/bash
           - -c
@@ -40,13 +80,13 @@ spec:
             source start.sh        
         resources:
           limits:
-            cpu: 3000m
-            memory: 2500Mi
+            # cpu: 3000m
+            # memory: 2500Mi
             aws.amazon.com/neuron: 1
             # aws.amazon.com/neuroncore: 2
-          requests:
-            cpu: 3000m
-            memory: 2500Mi
+          # requests:
+          #   cpu: 3000m
+          #   memory: 2500Mi
         env:
           - name: NEURON_RT_VISIBLE_CORES
             value: 0,1,2

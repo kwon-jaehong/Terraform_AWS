@@ -8,7 +8,7 @@ spec:
   limits:
     resources:
       # cpu: 1000 # limit to 100 CPU cores
-      aws.amazon.com/neuron: 50
+      aws.amazon.com/neuron: 80
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
@@ -32,8 +32,15 @@ metadata:
 spec:
   subnetSelector:
     kubernetes.io/cluster/chunjae_ocr: owned
+  ## 새로 생성한 노드의 보안 그룹 설정
+  # https://karpenter.sh/preview/concepts/node-templates/
   securityGroupSelector:
-    kubernetes.io/cluster/chunjae_ocr: owned
+    # kubernetes.io/cluster/chunjae_ocr: owned
+    Name: "eks-*"
+    # aws-ids: "sg-063d7acfb4b06c82c,sg-06e0cf9c198874591"
+
+    #  aws_eks_cluster.example_cluster.vpc_config.0.vpc_security_group_ids[0]
+    #테라폼에서 이렇게 가져와야하고, 이거 yaml으로 제대로 해야될듯.
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:

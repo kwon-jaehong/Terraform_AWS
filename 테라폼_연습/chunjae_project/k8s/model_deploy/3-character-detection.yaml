@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: character-detection
+  name: character-detection-neuroncore
   namespace: application
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       application: character-detection
@@ -16,8 +16,8 @@ spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
       ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
-      nodeSelector:
-        eks.amazonaws.com/nodegroup: inf_node_group
+      # nodeSelector:
+      #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-detection
         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:11
@@ -30,18 +30,72 @@ spec:
             source start.sh        
         resources:
           limits:
-            cpu: 1200m
-            memory: 800Mi
+            # cpu: 1200m
+            # memory: 800Mi
             # aws.amazon.com/neuron: 1
             aws.amazon.com/neuroncore: 1
-          requests:
-            cpu: 1000m
-            memory: 500Mi
+          # requests:
+          #   cpu: 1000m
+          #   memory: 500Mi
         env:
           - name: redis_host
             value: redis-master.messagesys.svc
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: character-detection-neuron
+  namespace: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: character-detection
+  template:
+    metadata:
+      labels:
+        application: character-detection
+    spec:
+      ## 포드 스케줄러 작동
+      schedulerName: my-scheduler
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup 
+                operator: NotIn
+                values:
+                - inf_node_group
+      containers:
+      - name: character-detection
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:11
+        # command: ["/bin/sleep", "3650d"]
+        command:
+          - /bin/bash
+          - -c
+          - |
+            ./env/bin/python rabbitmq_det.py &
+            source start.sh        
+        resources:
+          limits:
+            # cpu: 1200m
+            # memory: 800Mi
+            aws.amazon.com/neuron: 1
+            # aws.amazon.com/neuroncore: 1
+          # requests:
+          #   cpu: 1000m
+          #   memory: 500Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
+          - name: NEURON_RT_VISIBLE_CORES
+            value: 0
+
 ---
 kind: Service
 apiVersion: v1

@@ -35,3 +35,73 @@ spec:
   - name: web
     port: 8081
   type: LoadBalancer
+
+  ---
+  
+
+
+
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8443
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: v1
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: v2
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:v2
+        ports:
+        - containerPort: 8080

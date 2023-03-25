@@ -58,13 +58,13 @@ resource "aws_eks_node_group" "admin_node_group" {
     aws_subnet.eks_public_2.id
   ]
   scaling_config {
-    desired_size = 6
+    desired_size = 5
     max_size = 10
-    min_size = 6
+    min_size = 5
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 40
+  disk_size = 12
   force_update_version = false
   instance_types = ["t3.medium"]  
   # instance_types = ["t3.large"]
@@ -104,13 +104,13 @@ resource "aws_eks_node_group" "prometheus_node_group" {
     aws_subnet.eks_public_2.id
   ]
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     max_size = 5
-    min_size = 1
+    min_size = 2
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 40
+  disk_size = 12
   force_update_version = false
   instance_types = ["t3.large"]
   labels = {
@@ -137,6 +137,49 @@ resource "aws_eks_node_group" "prometheus_node_group" {
 
 
 
+## rabbitmq, redis 설치할 노드
+resource "aws_eks_node_group" "message_sys" {
+  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  node_group_name = "message_sys_node_group"
+  node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
+
+  subnet_ids = [
+    aws_subnet.eks_public_1.id,
+    aws_subnet.eks_public_2.id
+  ]
+  scaling_config {
+    desired_size = 3
+    max_size = 10
+    min_size = 3
+  }
+  ami_type = "AL2_x86_64"
+  capacity_type = "ON_DEMAND"
+  disk_size = 15
+  force_update_version = false
+  instance_types = ["t3.medium"]
+  labels = {
+    role = "message_sys_role"
+  }
+  version = var.KUBE_VERSION
+
+  timeouts {
+    create = "1h"
+    update = "1h"
+    delete = "1h"
+  }
+
+  remote_access {
+    ec2_ssh_key = "test"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
+    aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
+    aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+  ]
+}
+
+
 
 
 ## api 게이트웨이 자원을 가질 노드 그룹
@@ -156,7 +199,7 @@ resource "aws_eks_node_group" "apigateway_node_group" {
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
-  disk_size = 30
+  disk_size = 12
   force_update_version = false
   instance_types = ["t3.medium"]
   labels = {
@@ -231,7 +274,7 @@ resource "aws_eks_node_group" "inf_node_group" {
 
   # Disk size in GiB for worker nodes
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 50
+  disk_size = 35
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.

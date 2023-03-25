@@ -168,7 +168,7 @@ resource "helm_release" "rabbitmq-cluster-operator" {
   version          = "3.2.7"
   values = ["${file("${var.PATH_HELM_VALUE}/rabbitmq-cluster-operator-chart-value.yaml")}"]
 
-  depends_on = [aws_eks_node_group.admin_node_group,
+  depends_on = [aws_eks_node_group.message_sys,
                 kubectl_manifest.messagesys_namespace_create,
                 helm_release.istio_gateway]
 }
@@ -184,7 +184,7 @@ resource "helm_release" "redis" {
   version          = "17.8.6"
   values = ["${file("${var.PATH_HELM_VALUE}/redis-chart-value.yaml")}"]
 
-  depends_on = [aws_eks_node_group.admin_node_group,
+  depends_on = [aws_eks_node_group.message_sys,
                 kubectl_manifest.messagesys_namespace_create,
                 helm_release.istio_gateway]
 }

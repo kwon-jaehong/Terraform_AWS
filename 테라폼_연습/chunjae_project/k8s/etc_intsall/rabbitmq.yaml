@@ -9,9 +9,6 @@ spec:
     requests:
       cpu: 500m
       memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
   rabbitmq:
     additionalConfig: |
             log.console.level = info
@@ -27,6 +24,6 @@ spec:
           - key: eks.amazonaws.com/nodegroup
             operator: In
             values:
-            - admin_node_group
+            - message_sys_node_group
   service:
     type: LoadBalancer
