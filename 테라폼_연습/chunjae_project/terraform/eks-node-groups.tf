@@ -47,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
   role = aws_iam_role.chunjae_ocr_service_role.name
 }
 
-## 프로메테우스,엘라스틱 서치등 관리프로그램을 설치할 노드 그룹
+## 엘라스틱 서치등 관리프로그램을 설치할 노드 그룹
 resource "aws_eks_node_group" "admin_node_group" {
   cluster_name = aws_eks_cluster.chunjae_ocr.name
   node_group_name = "admin_node_group"
@@ -104,9 +104,9 @@ resource "aws_eks_node_group" "prometheus_node_group" {
     aws_subnet.eks_public_2.id
   ]
   scaling_config {
-    desired_size = 2
+    desired_size = 1
     max_size = 5
-    min_size = 2
+    min_size = 1
   }
   ami_type = "AL2_x86_64"
   capacity_type = "ON_DEMAND"
@@ -262,9 +262,9 @@ resource "aws_eks_node_group" "inf_node_group" {
   # Configuration block with scaling settings
   # 스케일링 설정이 있는 구성 블록
   scaling_config {
-    desired_size = 3
+    desired_size = 2
     max_size = 8
-    min_size = 3
+    min_size = 2
   }
 
   # Valid values: AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64

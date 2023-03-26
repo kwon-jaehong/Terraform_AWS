@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: character-recognition-neuron
   minReplicas: 1
-  maxReplicas: 60
+  maxReplicas: 70
   metrics:
   # use a "Pods" metric, which takes the average of the
   # given metric across all pods controlled by the autoscaling target
@@ -22,7 +22,7 @@ spec:
         # target 500 milli-requests per second,
         # which is 1 request every two seconds
         type: Utilization
-        averageValue: 19m
+        averageValue: 15m
         
   # - type: Resource
   #   resource:

@@ -82,5 +82,3 @@ spec:
         - name: infa-map
           hostPath:
             path: /run
-
-

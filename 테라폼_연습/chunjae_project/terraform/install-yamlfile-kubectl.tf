@@ -129,29 +129,29 @@ resource "kubectl_manifest" "karpenter_provisioner" {
 
 
 
-## istio용 프로메테우스
-data "kubectl_file_documents" "istio_prometheus" {
-  content = file("${var.PATH_ETC}/istio-prometheus.yaml")
-}
-resource "kubectl_manifest" "istio_prometheus" {
-    for_each  = data.kubectl_file_documents.istio_prometheus.manifests
-    yaml_body = each.value
-    depends_on = [
-      helm_release.istio_gateway
-    ]
-}
+# ## istio용 프로메테우스
+# data "kubectl_file_documents" "istio_prometheus" {
+#   content = file("${var.PATH_ETC}/istio-prometheus.yaml")
+# }
+# resource "kubectl_manifest" "istio_prometheus" {
+#     for_each  = data.kubectl_file_documents.istio_prometheus.manifests
+#     yaml_body = each.value
+#     depends_on = [
+#       helm_release.istio_gateway
+#     ]
+# }
 
-## istio- kiali
-data "kubectl_file_documents" "istio_kiali" {
-  content = file("${var.PATH_ETC}/istio-kiali.yaml")
-}
-resource "kubectl_manifest" "istio_kiali" {
-    for_each  = data.kubectl_file_documents.istio_kiali.manifests
-    yaml_body = each.value
-    depends_on = [
-      helm_release.istio_gateway
-    ]
-}
+# ## istio- kiali
+# data "kubectl_file_documents" "istio_kiali" {
+#   content = file("${var.PATH_ETC}/istio-kiali.yaml")
+# }
+# resource "kubectl_manifest" "istio_kiali" {
+#     for_each  = data.kubectl_file_documents.istio_kiali.manifests
+#     yaml_body = each.value
+#     depends_on = [
+#       helm_release.istio_gateway
+#     ]
+# }
 
 
 

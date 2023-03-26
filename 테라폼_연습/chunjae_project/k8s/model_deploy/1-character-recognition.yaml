@@ -15,13 +15,12 @@ spec:
     spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
-
       ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
       nodeSelector:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:15
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:17
         command:
           - /bin/bash
           - -c
@@ -42,6 +41,15 @@ spec:
             value: redis-master.messagesys.svc
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
+        readinessProbe:
+          exec:
+            command:
+            - env/bin/python
+            - check_neuroncore.py
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 1
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,7 +79,7 @@ spec:
                 - inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:15
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:17
         command:
           - /bin/bash
           - -c

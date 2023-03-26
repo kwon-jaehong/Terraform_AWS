@@ -20,7 +20,7 @@ spec:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-detection
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:11
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:12
         # command: ["/bin/sleep", "3650d"]
         command:
           - /bin/bash
@@ -71,7 +71,7 @@ spec:
                 - inf_node_group
       containers:
       - name: character-detection
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:11
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:12
         # command: ["/bin/sleep", "3650d"]
         command:
           - /bin/bash
@@ -94,7 +94,7 @@ spec:
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
           - name: NEURON_RT_VISIBLE_CORES
-            value: 0
+            value: '0'
 
 ---
 kind: Service

@@ -20,7 +20,7 @@ spec:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: image-embedding
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/image_embed:9
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/image_embed:10
         command:
           - /bin/bash
           - -c
