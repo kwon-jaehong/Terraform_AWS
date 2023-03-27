@@ -16,8 +16,8 @@ spec:
       ## 포드 스케줄러 작동
       schedulerName: my-scheduler
       ## 어짜피 포드 스케줄러에서 뉴런코어를 담당다기 때문에 따로 노드를 셀렉트 안해줘도 된다
-      # nodeSelector:
-      #   eks.amazonaws.com/nodegroup: inf_node_group
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-detection
         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:12

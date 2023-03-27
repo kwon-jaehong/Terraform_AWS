@@ -20,7 +20,7 @@ spec:
       #   eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: layout-analysis
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:20
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/yolov5_layout:95
         command:
           - /bin/bash
           - -c

@@ -41,15 +41,15 @@ spec:
             value: redis-master.messagesys.svc
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
-        readinessProbe:
+        livenessProbe:
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 1
           exec:
             command:
             - env/bin/python
             - check_neuroncore.py
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 1
-          failureThreshold: 1
 ---
 apiVersion: apps/v1
 kind: Deployment

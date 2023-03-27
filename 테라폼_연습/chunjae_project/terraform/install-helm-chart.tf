@@ -47,7 +47,7 @@ resource "helm_release" "karpenter" {
   
 
   ## 생성 삭제하는데 2시간까지 기다림
-  timeout = 7200
+  # timeout = 7200
 
   depends_on = [aws_eks_node_group.admin_node_group]
   
@@ -66,7 +66,7 @@ resource "helm_release" "prometheus_stack" {
   chart      = "kube-prometheus-stack"
   version    = "19.3.0"
   values = ["${file("${var.PATH_HELM_VALUE}/prometheus-stack-chart-value.yaml")}"]
-  timeout = 7200
+  # timeout = 7200
   depends_on = [aws_eks_node_group.prometheus_node_group]
 }
 
