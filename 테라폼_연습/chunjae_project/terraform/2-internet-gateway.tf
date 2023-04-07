@@ -1,6 +1,6 @@
 
 # vpc와 연결해줄 인터넷 게이트 웨이 생성
-# 인터넷 게이트웨이 없으면, aws와 통신 못함
+# 인터넷 게이트웨이 없으면, aws vpc와 통신 못함
 resource "aws_internet_gateway" "eks_igw" {
 
   # vpc_id를 통해, 생성과 동시에 연결

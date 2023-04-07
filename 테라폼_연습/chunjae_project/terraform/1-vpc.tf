@@ -1,6 +1,6 @@
 
 
-
+##  가상 사설 클라우드 네트워크(Virtual Private Cloud) 서비스 설정
 resource "aws_vpc" "eks_vpc" {
   # vpc 사이더 블럭 설정
   cidr_block = "192.168.0.0/16"
@@ -29,9 +29,9 @@ resource "aws_vpc" "eks_vpc" {
   }
 }
 
-output "vpc_id" {
-  value       = aws_vpc.eks_vpc.id
-  description = "VPC ID print"
-  # 출력 값을 민감하게 설정하면 Terraform이 계획 및 적용에서 해당 값을 표시하지 않습니다.
-  sensitive = false
-}
+# output "vpc_id" {
+#   value       = aws_vpc.eks_vpc.id
+#   description = "VPC ID print"
+#   # 출력 값을 민감하게 설정하면 Terraform이 계획 및 적용에서 해당 값을 표시하지 않습니다.
+#   sensitive = false
+# }

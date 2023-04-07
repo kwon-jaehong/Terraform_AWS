@@ -1,9 +1,5 @@
 
 ## 공식 AWS 문서에서는 EKS를 구성할때 최소한 2개의 서브넷, 가용영역을 지정하라고 명시되어있다.
-## 나는 그냥 퍼블릭 서브넷으로만 구성하려고 한다.
-
-# 태그관련
-## https://velog.io/@ausg/eks-k8s-elb
 
 resource "aws_subnet" "eks_public_1" {
   # 생성된 서브넷과 연결할 vpc id 가져옴
