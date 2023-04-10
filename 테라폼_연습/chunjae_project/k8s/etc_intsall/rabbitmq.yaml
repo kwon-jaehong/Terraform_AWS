@@ -25,5 +25,5 @@ spec:
             operator: In
             values:
             - message_sys_node_group
-  service:
-    type: LoadBalancer
+  # service:
+  #   type: LoadBalancer

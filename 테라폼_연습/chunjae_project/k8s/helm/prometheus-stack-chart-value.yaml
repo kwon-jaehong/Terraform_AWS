@@ -21,11 +21,11 @@ thanosRuler:
       eks.amazonaws.com/nodegroup: admin_node_group
 grafana:
   adminPassword: test123
-  service:
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
-    type: LoadBalancer
+  # service:
+  #   annotations:
+  #     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #     service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+  #   type: LoadBalancer
   extraExposePorts:
     - name: https
       port: 443
@@ -46,8 +46,8 @@ grafana:
     size: 20Gi
 prometheus:
   
-  service:
-    type: LoadBalancer
+  # service:
+  #   type: LoadBalancer
 
   prometheusSpec:
     nodeSelector:

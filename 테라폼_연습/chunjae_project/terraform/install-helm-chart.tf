@@ -54,9 +54,8 @@ resource "helm_release" "karpenter" {
 }
 
 
-##################################
 
-
+## 프로메테우스-stack  (프로메테우스 + 그라파나)
 resource "helm_release" "prometheus_stack" {
   namespace        = "monitoring"
   create_namespace = true
@@ -71,6 +70,7 @@ resource "helm_release" "prometheus_stack" {
 }
 
 
+## 프로메테우스 어댑터 설치
 resource "helm_release" "prometheus_adapter" {
   namespace        = "monitoring"
   create_namespace = true

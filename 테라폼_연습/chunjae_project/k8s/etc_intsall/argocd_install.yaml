@@ -2982,7 +2982,7 @@ spec:
   selector:
     app.kubernetes.io/name: argocd-server
   ## EKS 외부노출
-  type: LoadBalancer
+  # type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
