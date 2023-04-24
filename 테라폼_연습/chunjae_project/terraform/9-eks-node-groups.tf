@@ -318,8 +318,9 @@ resource "aws_eks_node_group" "inf_node_group" {
 
 
   # EKS 노드 그룹과 연결된 인스턴스 유형 목록
-  instance_types = ["inf1.xlarge"]
-
+  ## yolo 처음 불러올때 메모리 오류 때문에 2xlarge써봄 -> yolo 이미지 사이즈 960 안쓸거면 xlarge로 충분
+  # instance_types = ["inf1.xlarge"]
+  instance_types = ["inf1.2xlarge"]
 
   # Kubernetes 레이블의 키-값 맵입니다. EKS API로 적용된 레이블만 이 인수로 관리됩니다. EKS 노드 그룹에 적용된 다른 Kubernetes 레이블은 관리되지 않습니다.
   labels = {

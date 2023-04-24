@@ -40,7 +40,6 @@ resource "kubectl_manifest" "argo_install" {
 
 
 
-# https://stackoverflow.com/questions/54094575/how-to-run-kubectl-apply-commands-in-terraform
 ## 뉴런 스케줄러 설치
 data "kubectl_file_documents" "neuron_device_plugin_rbac" {
   content = file("${var.PATH_NEURON_PLUGIN}/k8s-neuron-device-plugin-rbac.yaml")
@@ -89,10 +88,17 @@ resource "kubectl_manifest" "neuron_my_scheduler" {
 ## 뉴런 스케줄러 설치끝
 
 
-## 로그 수집기 flunedtd 설치
+
+
+
+
+
+## 로그 수집기 flunedtd 설치 시작
 data "kubectl_file_documents" "flunedtd_map" {
   content = file("${var.PATH_ETC}/flunedtd-map.yaml")
 }
+
+## 로그 수집기 flunedtd config맵 설정
 resource "kubectl_manifest" "flunedtd_map" {
     for_each  = data.kubectl_file_documents.flunedtd_map.manifests
     yaml_body = each.value
@@ -101,9 +107,11 @@ resource "kubectl_manifest" "flunedtd_map" {
     ]
 }
 
+
 data "kubectl_file_documents" "flunedtd_ds" {
   content = file("${var.PATH_ETC}/flunedtd-ds.yaml")
 }
+## 로그 수집기 flunedtd config맵 배포
 resource "kubectl_manifest" "flunedtd_ds" {
     for_each  = data.kubectl_file_documents.flunedtd_ds.manifests
     yaml_body = each.value
@@ -112,6 +120,9 @@ resource "kubectl_manifest" "flunedtd_ds" {
     ]
 }
 ## 로그 수집기 flunedtd 설치끝
+
+
+
 
 
 

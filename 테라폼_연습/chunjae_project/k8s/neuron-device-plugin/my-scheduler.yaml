@@ -158,4 +158,3 @@ spec:
         - name: config-volume
           configMap:
             name: my-scheduler-config
-

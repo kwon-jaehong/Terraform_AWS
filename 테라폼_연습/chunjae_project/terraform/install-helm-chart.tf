@@ -11,6 +11,8 @@ provider "helm" {
   }
 }
 
+
+## 카펜터 설치
 resource "helm_release" "karpenter" {
   namespace        = "karpenter"
   create_namespace = true
@@ -44,14 +46,9 @@ resource "helm_release" "karpenter" {
     name  = "nodeSelector.eks\\.amazonaws\\.com/nodegroup"
     value = "admin_node_group"
   }
-  
-
-  ## 생성 삭제하는데 2시간까지 기다림
-  # timeout = 7200
-
-  depends_on = [aws_eks_node_group.admin_node_group]
-  
+  depends_on = [aws_eks_node_group.admin_node_group] 
 }
+
 
 
 
@@ -83,6 +80,7 @@ resource "helm_release" "prometheus_adapter" {
   depends_on = [aws_eks_node_group.admin_node_group]
 }
 
+## 엘라스틱 서치 설치
 resource "helm_release" "elasticsearch" {
   namespace        = "elasticsearch"
   create_namespace = true
@@ -95,6 +93,7 @@ resource "helm_release" "elasticsearch" {
   depends_on = [aws_eks_node_group.admin_node_group]
 }
 
+## 키바나 설치
 resource "helm_release" "kibana" {
   namespace        = "elasticsearch"
   create_namespace = true
@@ -109,7 +108,7 @@ resource "helm_release" "kibana" {
 
 
 
-## istio
+## istio 설치 시작
 resource "helm_release" "istio_base" {
   name = "my-istio-base-release"
 
@@ -156,8 +155,11 @@ resource "helm_release" "istio_gateway" {
     helm_release.istiod
   ]
 }
+## istio 설치 끝
 
 
+
+## RabbitMQ 클러스터 오퍼레이터 설치
 resource "helm_release" "rabbitmq-cluster-operator" {
   name = "rabbitmq"
 
@@ -174,6 +176,7 @@ resource "helm_release" "rabbitmq-cluster-operator" {
 }
 
 
+## redis 설치
 resource "helm_release" "redis" {
   name = "redis"
 

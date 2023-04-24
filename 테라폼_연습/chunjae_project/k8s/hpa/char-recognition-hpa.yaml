@@ -8,7 +8,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: character-recognition-neuron
-  minReplicas: 15
+  minReplicas: 8
   maxReplicas: 70
   metrics:
   # use a "Pods" metric, which takes the average of the

@@ -13,7 +13,7 @@ spec:
     additionalConfig: |
             log.console.level = info
             channel_max = 1700
-            default_user= chunjae 
+            default_user = chunjae 
             default_pass = chunjae
             default_user_tags.administrator = true
   affinity:
@@ -25,5 +25,5 @@ spec:
             operator: In
             values:
             - message_sys_node_group
-  # service:
-  #   type: LoadBalancer
+  service:
+    type: ClusterIP

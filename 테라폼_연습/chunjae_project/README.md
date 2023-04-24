@@ -99,3 +99,37 @@ inf1 x라지
 ㄴㄴ
 
 100문제 해도 될듯
+
+
+
+---------------------------------------------
+kubectl get customresourcedefinition rabbitmqclusters.rabbitmq.com
+
+
+kubectl get rabbitmqclusters.rabbitmq.com production-rabbitmqcluster -n messagesys    
+
+
+kubectl get rabbitmqclusters.rabbitmq.com production-rabbitmqcluster -n messagesys    
+
+
+
+
+kubectl patch rabbitmqclusters.rabbitmq.com production-rabbitmqcluster -n messagesys --type='json' -p='[{"op": "replace", "path": "/spec/service/type", "value": "LoadBalancer"}]'
+kubectl get svc production-rabbitmqcluster -n messagesys    
+
+
+kubectl patch rabbitmqclusters.rabbitmq.com production-rabbitmqcluster -n messagesys --type='json' -p='[{"op": "replace", "path": "/spec/service/type", "value": "ClusterIP"}]'
+kubectl get svc production-rabbitmqcluster -n messagesys    
+
+
+
+------------
+
+
+kubectl apply -f ../k8s/etc_intsall/redis-ui.yaml
+
+kubectl get svc redis-commander -n messagesys  
+
+
+kubectl delete -f ../k8s/etc_intsall/redis-ui.yaml
+
