@@ -53,9 +53,18 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:38
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:39
         # command: ["/bin/sleep", "3650d"]
+        command:
+          - /bin/bash
+          - -c
+          - |
+            service ntp restart &
+            python3 app.py 
         resources:
+          limits:
+            cpu: 1800m
+            memory: 2500Mi
           requests:
             cpu: 1000m
             # memory: 0.8Gi
