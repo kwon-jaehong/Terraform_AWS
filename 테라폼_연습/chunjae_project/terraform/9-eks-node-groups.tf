@@ -64,9 +64,9 @@ resource "aws_eks_node_group" "admin_node_group" {
 
   ## 컴퓨터 사이즈 설정 (대수)
   scaling_config {
-    desired_size = 5
+    desired_size = 4
     max_size = 10
-    min_size = 5
+    min_size = 4
   }
 
   ## 아마존 이미지 타입
@@ -234,8 +234,8 @@ resource "aws_eks_node_group" "apigateway_node_group" {
   ]
 
   scaling_config {
-    desired_size = 2
-    max_size = 8
+    desired_size = 5
+    max_size = 15
     min_size = 2
   }
 
