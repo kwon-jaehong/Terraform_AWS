@@ -180,9 +180,9 @@ resource "aws_eks_node_group" "message_sys" {
   ]
 
   scaling_config {
-    desired_size = 3
+    desired_size = 4
     max_size = 10
-    min_size = 3
+    min_size = 4
   }
 
   ami_type = "AL2_x86_64"

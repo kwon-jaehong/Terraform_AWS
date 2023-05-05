@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-upload
+  namespace: messagesys
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      application: s3-upload
+  template:
+    metadata:
+      labels:
+        application: s3-upload
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: message_sys_node_group
+      containers:
+      - name:  s3-upload
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/upload_s3:3
+        resources:
+          limits:
+            cpu: 350m
+            memory: 400Mi
+        env:
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
