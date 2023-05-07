@@ -5,7 +5,7 @@
 
 
 aws 계정에서 처음 스팟 인스턴스를 사용하는 경우에만
-aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+aws iam create-service-linked-role --aws-service-name spot.amazonaws.com 
 
 -------------------
 테라폼 쿠버네티스 얌 보디
