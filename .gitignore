@@ -6,3 +6,5 @@ env/
 *terraform.tfstate*
 *terraform.tfstate.backup*
 *.inv*
+테라폼_연습/큐브플로우 연습/terraform/manifests
+테라폼_연습/큐브플로우 연습/terraform/kubeflow-manifests
