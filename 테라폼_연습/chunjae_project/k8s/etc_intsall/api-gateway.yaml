@@ -40,7 +40,7 @@ metadata:
   name: api-gateway
   namespace: application
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       application: api-gateway
@@ -53,14 +53,14 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:45
-        # command: ["/bin/sleep", "3650d"]
-        command:
-          - /bin/bash
-          - -c
-          - |
-            service ntp restart &
-            python3 app.py 
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:51
+        command: ["/bin/sleep", "3650d"]
+        # command:
+        #   - /bin/bash
+        #   - -c
+        #   - |
+        #     service ntp restart &
+        #     python3 app.py 
         resources:
           limits:
             cpu: 1800m

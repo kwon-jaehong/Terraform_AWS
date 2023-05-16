@@ -103,7 +103,9 @@ resource "helm_release" "kibana" {
   chart      = "kibana"
   version    = "7.6.0"
   values = ["${file("${var.PATH_HELM_VALUE}/kibana-chart-value.yaml")}"]
-  depends_on = [aws_eks_node_group.admin_node_group]
+  depends_on = [aws_eks_node_group.admin_node_group,
+  helm_release.elasticsearch
+  ]
 }
 
 
