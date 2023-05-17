@@ -1,6 +1,8 @@
 
 aws eks --region us-east-2 update-kubeconfig --name test_eks --profile default
 
+
+
 ----
 
 참조

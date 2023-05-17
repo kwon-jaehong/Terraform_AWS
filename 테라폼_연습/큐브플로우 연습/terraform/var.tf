@@ -15,5 +15,10 @@ variable "EKS_NAME" {
 
 variable "KUBE_VERSION" {
     type = string
-    default = "1.25"
+    default = "1.24"
+}
+
+variable "PATH_HELM_VALUE" {
+    type = string
+    default = "../k8s/helm"
 }

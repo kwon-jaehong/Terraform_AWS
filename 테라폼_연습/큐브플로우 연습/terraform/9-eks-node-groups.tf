@@ -66,7 +66,7 @@ resource "aws_eks_node_group" "admin_node_group" {
 
   ## 컴퓨터 사이즈 설정 (대수)
   scaling_config {
-    desired_size = 2
+    desired_size = 1
     max_size = 10
     min_size = 1
   }
@@ -80,7 +80,7 @@ resource "aws_eks_node_group" "admin_node_group" {
   capacity_type = "ON_DEMAND"
 
   ## 컴퓨터 disk 사이즈
-  disk_size = 200
+  disk_size = 100
 
   ## 쿠버네티스 버젼 자동 업데이트 안함
   force_update_version = false

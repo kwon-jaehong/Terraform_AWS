@@ -54,13 +54,13 @@ spec:
       containers:
       - name: api-gateway
         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:51
-        command: ["/bin/sleep", "3650d"]
-        # command:
-        #   - /bin/bash
-        #   - -c
-        #   - |
-        #     service ntp restart &
-        #     python3 app.py 
+        # command: ["/bin/sleep", "3650d"]
+        command:
+          - /bin/bash
+          - -c
+          - |
+            service ntp restart &
+            python3 app.py 
         resources:
           limits:
             cpu: 1800m

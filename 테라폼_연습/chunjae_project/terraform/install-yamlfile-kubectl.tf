@@ -214,6 +214,26 @@ resource "kubectl_manifest" "rabbitmq" {
 
 
 
+## s3 업로드 컨테이너 배포
+data "kubectl_file_documents" "s3_upload" {
+  content = file("${var.PATH_ETC}/s3_upload.yaml")
+}
+resource "kubectl_manifest" "rabbitmq" {
+    for_each  = data.kubectl_file_documents.s3_upload.manifests
+    yaml_body = each.value
+
+    ## 나중에 이스티오 추가 해줘야할듯
+    depends_on = [
+      kubectl_manifest.rabbitmq
+    ]
+}
+
+
+
+
+
+
+
 ## api 게이트웨이 설치
 data "kubectl_file_documents" "api_gateway" {
   content = file("${var.PATH_ETC}/api-gateway.yaml")
