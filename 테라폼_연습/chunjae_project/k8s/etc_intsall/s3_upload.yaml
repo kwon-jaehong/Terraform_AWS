@@ -17,7 +17,7 @@ spec:
         eks.amazonaws.com/nodegroup: message_sys_node_group
       containers:
       - name:  s3-upload
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/upload_s3:3
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/upload_s3:4
         resources:
           limits:
             cpu: 350m
