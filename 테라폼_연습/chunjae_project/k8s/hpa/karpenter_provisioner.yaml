@@ -46,3 +46,4 @@ spec:
       ebs:
         volumeSize: 40Gi
         volumeType: gp2
+        deleteOnTermination: true

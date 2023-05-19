@@ -2,6 +2,8 @@ https://karpenter.sh/preview/concepts/provisioners/
 
 https://karpenter.sh/v0.20.0/getting-started/getting-started-with-terraform/
 
+https://kingofbackend.tistory.com/261
+
 노드 템플릿
 https://karpenter.sh/preview/concepts/node-templates/
 

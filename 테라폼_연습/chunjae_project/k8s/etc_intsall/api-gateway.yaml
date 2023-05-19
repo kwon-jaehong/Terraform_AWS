@@ -53,7 +53,7 @@ spec:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:52
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:53
         # command: ["/bin/sleep", "3650d"]
         command:
           - /bin/bash

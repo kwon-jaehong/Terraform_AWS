@@ -218,7 +218,7 @@ resource "kubectl_manifest" "rabbitmq" {
 data "kubectl_file_documents" "s3_upload" {
   content = file("${var.PATH_ETC}/s3_upload.yaml")
 }
-resource "kubectl_manifest" "rabbitmq" {
+resource "kubectl_manifest" "s3_upload" {
     for_each  = data.kubectl_file_documents.s3_upload.manifests
     yaml_body = each.value
 

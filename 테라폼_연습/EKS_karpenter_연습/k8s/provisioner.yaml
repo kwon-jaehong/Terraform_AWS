@@ -9,19 +9,19 @@ spec:
   limits:
     resources:
       cpu: 100 # limit to 100 CPU cores
-      aws.amazon.com/neuron: 100
   requirements:
     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
       operator: In
-      values: ["spot"]
+      values: ["on-demand"]
+      # values: ["spot"]
     # Include general purpose instance families
     - key: karpenter.k8s.aws/instance-family
       operator: In
-      values: [inf1]
+      values: ["inf1"]
     # Exclude small instance sizes
     - key: karpenter.k8s.aws/instance-size
-      operator: NotIn
-      values: [nano, micro, small]
+      operator: In
+      values: ["xlarge"]
   providerRef:
     name: my-provider
 ---
@@ -39,10 +39,4 @@ spec:
       ebs:
         volumeSize: 40Gi
         volumeType: gp3
-        deleteOnTermination: true
-
-    - deviceName: /dev/xvdb
-      ebs:
-        volumeType: gp3
-        volumeSize: 30Gi # replace with your required disk size
         deleteOnTermination: true

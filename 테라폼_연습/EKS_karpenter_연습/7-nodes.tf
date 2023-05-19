@@ -43,14 +43,14 @@ resource "aws_eks_node_group" "private-nodes" {
   instance_types = ["t3.large"]
 
   scaling_config {
-    desired_size = 3
+    desired_size = 2
     max_size     = 10
-    min_size     = 3
+    min_size     = 2
   }
   disk_size = 50
-  remote_access {
-    ec2_ssh_key = "test"
-  }
+  # remote_access {
+  #   ec2_ssh_key = "test"
+  # }
 
   labels = {
     role = "general"
@@ -64,7 +64,7 @@ resource "aws_eks_node_group" "private-nodes" {
 
   # Allow external changes without Terraform plan difference
   # Terraform 계획 차이 없이 외부 변경 허용
-  lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
-  }
+  # lifecycle {
+  #   ignore_changes = [scaling_config[0].desired_size]
+  # }
 }
