@@ -22,6 +22,12 @@ resource "aws_iam_role_policy_attachment" "amazon-eks-cluster-policy" {
   role       = aws_iam_role.eks-cluster.name
 }
 
+resource "aws_iam_role_policy_attachment" "amazon-eks-cluster-policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks-cluster.name
+}
+
+
 resource "aws_eks_cluster" "cluster" {
   name     = var.cluster_name
   version  = var.KUBE_VERSION
