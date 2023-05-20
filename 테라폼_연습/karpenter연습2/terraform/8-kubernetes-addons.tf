@@ -4,7 +4,7 @@ module "kubernetes_addons" {
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Add-ons
-  # enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_amazon_eks_aws_ebs_csi_driver = true
 
   # Self-managed Add-ons
   # enable_aws_efs_csi_driver = true

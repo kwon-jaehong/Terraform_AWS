@@ -50,9 +50,9 @@ module "eks_blueprints" {
       capacity_type   = "ON_DEMAND"
       node_group_name = "general"
       instance_types  = ["t3.large"]
-      desired_size    = "2"
-      max_size        = "5"
-      min_size        = "2"
+      desired_size    = "4"
+      max_size        = "10"
+      min_size        = "4"
     }
   }
 }
