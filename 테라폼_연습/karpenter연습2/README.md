@@ -11,7 +11,7 @@ https://karpenter.sh/preview/concepts/node-templates/
 aws 계정에서 처음 스팟 인스턴스를 사용하는 경우에만
 
 aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
-------
+------ㄴ
 aws eks --region us-east-2 update-kubeconfig --name demo --profile default
 
 
