@@ -1,15 +1,3 @@
-provider "kubectl" {
-  host                   = aws_eks_cluster.chunjae_ocr.endpoint
-  cluster_ca_certificate = base64decode(aws_eks_cluster.chunjae_ocr.certificate_authority[0].data)
-  load_config_file       = false
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.chunjae_ocr.id]
-    command     = "aws"
-  }
-
-}
 
 ## argocd 네임스페이스 생성
 resource "kubectl_manifest" "argocd_namespace_create" {
@@ -126,17 +114,17 @@ resource "kubectl_manifest" "flunedtd_ds" {
 
 
 
-# 카펜터 프로비저너 설치
-data "kubectl_file_documents" "karpenter_provisioner" {
-  content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
-}
-resource "kubectl_manifest" "karpenter_provisioner" {
-    for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
-    yaml_body = each.value
-    depends_on = [
-      kubectl_manifest.neuron_my_scheduler
-    ]
-}
+# # 카펜터 프로비저너 설치
+# data "kubectl_file_documents" "karpenter_provisioner" {
+#   content = file("${var.PATH_HPA}/karpenter_provisioner.yaml")
+# }
+# resource "kubectl_manifest" "karpenter_provisioner" {
+#     for_each  = data.kubectl_file_documents.karpenter_provisioner.manifests
+#     yaml_body = each.value
+#     depends_on = [
+#       kubectl_manifest.neuron_my_scheduler
+#     ]
+# }
 
 
 

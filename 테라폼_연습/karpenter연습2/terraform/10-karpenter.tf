@@ -28,55 +28,55 @@ module "karpenter" {
   create_irsa            = false # IRSA will be created by the kubernetes-addons module
 }
 
-resource "kubectl_manifest" "karpenter_provisioner" {
-  yaml_body = <<-YAML
----
-apiVersion: karpenter.sh/v1alpha5
-kind: Provisioner
-metadata:
-  name: default
-spec:
-  ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
-  ttlSecondsUntilExpired: 1200 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
-  limits:
-    resources:
-      cpu: 100 # limit to 100 CPU cores
-  requirements:
-    - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
-      operator: In
-      # values: ["on-demand"]
-      values: ["spot"]
-    # Include general purpose instance families
-    - key: karpenter.k8s.aws/instance-family
-      operator: In
-      values: [inf1]
-    # Exclude small instance sizes
-    - key: karpenter.k8s.aws/instance-size
-      operator: In
-      values: ["xlarge"]
-  providerRef:
-    name: default
-YAML
+# resource "kubectl_manifest" "karpenter_provisioner" {
+#   yaml_body = <<-YAML
+# ---
+# apiVersion: karpenter.sh/v1alpha5
+# kind: Provisioner
+# metadata:
+#   name: default
+# spec:
+#   ttlSecondsAfterEmpty: 10 # scale down nodes after 60 seconds without workloads (excluding daemons)
+#   ttlSecondsUntilExpired: 1200 # expire nodes after 7 days (in seconds) = 7 * 60 * 60 * 24
+#   limits:
+#     resources:
+#       cpu: 100 # limit to 100 CPU cores
+#   requirements:
+#     - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
+#       operator: In
+#       # values: ["on-demand"]
+#       values: ["spot"]
+#     # Include general purpose instance families
+#     - key: karpenter.k8s.aws/instance-family
+#       operator: In
+#       values: [inf1]
+#     # Exclude small instance sizes
+#     - key: karpenter.k8s.aws/instance-size
+#       operator: In
+#       values: ["xlarge"]
+#   providerRef:
+#     name: default
+# YAML
 
-  depends_on = [module.kubernetes_addons]
-}
+#   depends_on = [module.kubernetes_addons]
+# }
 
-resource "kubectl_manifest" "karpenter_template" {
-  yaml_body = <<-YAML
----
-apiVersion: karpenter.k8s.aws/v1alpha1
-kind: AWSNodeTemplate
-metadata:
-    name: default
-spec:
-  subnetSelector:
-    "kubernetes.io/cluster/${module.eks_blueprints.eks_cluster_id}": "owned"
-  securityGroupSelector:
-    "kubernetes.io/cluster/${module.eks_blueprints.eks_cluster_id}": "owned"
-  instanceProfile: ${module.karpenter.instance_profile_name}
-  tags:
-    "kubernetes.io/cluster/${module.eks_blueprints.eks_cluster_id}": "owned"
-YAML
+# resource "kubectl_manifest" "karpenter_template" {
+#   yaml_body = <<-YAML
+# ---
+# apiVersion: karpenter.k8s.aws/v1alpha1
+# kind: AWSNodeTemplate
+# metadata:
+#     name: default
+# spec:
+#   subnetSelector:
+#     "kubernetes.io/cluster/${module.eks_blueprints.eks_cluster_id}": "owned"
+#   securityGroupSelector:
+#     "Name": "eks-*"
+#   instanceProfile: ${module.karpenter.instance_profile_name}
+#   tags:
+#     "kubernetes.io/cluster/${module.eks_blueprints.eks_cluster_id}": "owned"
+# YAML
 
-  depends_on = [module.kubernetes_addons]
-}
+#   depends_on = [module.kubernetes_addons]
+# }

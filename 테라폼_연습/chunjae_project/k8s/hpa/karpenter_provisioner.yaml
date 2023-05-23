@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
 metadata:
-  name: karpenter
+  name: default
 spec:
   ttlSecondsAfterEmpty: 300 # 아무런 워커노드 없을때 6분까지 대기하다가 삭제 
   ttlSecondsUntilExpired: 18000 #노드 5시간뒤 삭제
@@ -23,12 +23,12 @@ spec:
       values: [xlarge] # x라지, 2x라지만 사용
       # values: [xlarge, 2xlarge] # x라지, 2x라지만 사용
   providerRef:
-    name: my-provider
+    name: default
 ---
 apiVersion: karpenter.k8s.aws/v1alpha1
 kind: AWSNodeTemplate
 metadata:
-  name: my-provider
+  name: default
 spec:
   subnetSelector:
     kubernetes.io/cluster/chunjae_ocr: owned

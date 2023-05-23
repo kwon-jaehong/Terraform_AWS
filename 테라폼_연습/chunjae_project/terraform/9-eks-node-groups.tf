@@ -45,10 +45,20 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 }
 
 
+
+
+resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role = aws_iam_role.chunjae_ocr_service_role.name
+}
+
+
+
+
 ## 엘라스틱 서치등 관리 프로그램을 설치할 노드 그룹 선언
 resource "aws_eks_node_group" "admin_node_group" {
   ## EKS 클러스터 이름으로 노드 그룹 연결
-  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  cluster_name = module.eks_blueprints.eks_cluster_id
   
   ## 노드 그룹 이름
   node_group_name = "admin_node_group"
@@ -109,6 +119,7 @@ resource "aws_eks_node_group" "admin_node_group" {
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    module.eks_blueprints
   ]
 }
 
@@ -116,7 +127,7 @@ resource "aws_eks_node_group" "admin_node_group" {
 
 ## 프로메테우스를 관리할 노드 그룹, (램 많이 잡아먹음)
 resource "aws_eks_node_group" "prometheus_node_group" {
-  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  cluster_name = module.eks_blueprints.eks_cluster_id
   node_group_name = "prometheus_node_group"
   node_role_arn = aws_iam_role.chunjae_ocr_service_role.arn
 
@@ -160,6 +171,7 @@ resource "aws_eks_node_group" "prometheus_node_group" {
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    module.eks_blueprints
   ]
 }
 
@@ -168,7 +180,7 @@ resource "aws_eks_node_group" "prometheus_node_group" {
 ## rabbitmq, redis 설치할 노드
 resource "aws_eks_node_group" "message_sys" {
 
-  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  cluster_name = module.eks_blueprints.eks_cluster_id
 
   node_group_name = "message_sys_node_group"
 
@@ -215,6 +227,7 @@ resource "aws_eks_node_group" "message_sys" {
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    module.eks_blueprints
   ]
 }
 
@@ -222,7 +235,7 @@ resource "aws_eks_node_group" "message_sys" {
 ## api 게이트웨이 전용 노드 그룹
 resource "aws_eks_node_group" "apigateway_node_group" {
 
-  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  cluster_name = module.eks_blueprints.eks_cluster_id
 
   node_group_name = "apigateway_node_group"
 
@@ -269,14 +282,16 @@ resource "aws_eks_node_group" "apigateway_node_group" {
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    module.eks_blueprints
   ]
 }
+
 
 ## aws neuron 코어를 사용할  노드그룹 생성
 resource "aws_eks_node_group" "inf_node_group" {
 
   ## 클러스터 네임
-  cluster_name = aws_eks_cluster.chunjae_ocr.name
+  cluster_name = module.eks_blueprints.eks_cluster_id
   
   # 노드그룹 이름 지정
   node_group_name = "inf_node_group"
@@ -344,5 +359,6 @@ resource "aws_eks_node_group" "inf_node_group" {
     aws_iam_role_policy_attachment.amazon_eks_ocr_worker_node_policy,
     aws_iam_role_policy_attachment.amazon_eks_ocr_cni_policy,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    module.eks_blueprints
   ]
 }

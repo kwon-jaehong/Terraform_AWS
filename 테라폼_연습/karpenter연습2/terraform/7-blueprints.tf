@@ -2,8 +2,11 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0"
 
   cluster_name    = "demo"
-  cluster_version = "1.26"
+  cluster_version = var.KUBE_VERSION
   enable_irsa     = true
+
+  # create_cluster_security_group = false
+  # create_node_security_group = false
 
   map_roles = [
     {
@@ -39,22 +42,18 @@ module "eks_blueprints" {
   # vpc_id = aws_vpc.main.id
   vpc_id = module.vpc.vpc_id
 
-  # private_subnet_ids = [
-  #   aws_subnet.private_us_east_1a.id,
-  #   aws_subnet.private_us_east_1b.id
-  # ]
   private_subnet_ids = module.vpc.private_subnets
 
-  managed_node_groups = {
-    role = {
-      capacity_type   = "ON_DEMAND"
-      node_group_name = "general"
-      instance_types  = ["t3.large"]
-      desired_size    = "4"
-      max_size        = "10"
-      min_size        = "4"
-    }
-  }
+  # managed_node_groups = {
+  #   role = {
+  #     capacity_type   = "ON_DEMAND"
+  #     node_group_name = "general"
+  #     instance_types  = ["t3.large"]
+  #     desired_size    = "3"
+  #     max_size        = "10"
+  #     min_size        = "3"
+  #   }
+  # }
 }
 
 provider "kubernetes" {

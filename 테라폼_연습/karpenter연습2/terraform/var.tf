@@ -15,5 +15,5 @@ variable "cluster_name" {
 
 variable "KUBE_VERSION" {
     type = string
-    default = "1.26"
+    default = "1.25"
 }

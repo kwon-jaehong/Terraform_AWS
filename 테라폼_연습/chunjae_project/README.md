@@ -57,6 +57,9 @@ kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/application/po
 
 
 
+키바나 유저네임 elastic
+kubectl get secrets --namespace=elasticsearch elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d
+
 
 레디스 마스터 2개 키니 박살났음
 
@@ -104,3 +107,14 @@ inf1 x라지
 ---------------------
 api gateway 
 t3 스몰 써도 될듯
+
+
+
+
+-------------------------
+> module.eks_blueprints.eks_cluster_id
+"chunjae_ocr"
+> module.eks_blueprints.eks_oidc_provider_arn
+"arn:aws:iam::916657902198:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/05AFAECE888A94EF8678A28A2717AB12"
+> module.karpenter.role_arn
+"arn:aws:iam::916657902198:role/Karpenter-chunjae_ocr-2023052223514840910000000e"

@@ -34,6 +34,7 @@ spec:
     kubernetes.io/cluster/demo: owned
   securityGroupSelector:
     kubernetes.io/cluster/demo: owned
+  instanceProfile: "Karpenter-chunjae_ocr-2023052200234130930000000f"
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
