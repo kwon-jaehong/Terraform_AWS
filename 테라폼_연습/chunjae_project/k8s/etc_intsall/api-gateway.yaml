@@ -48,12 +48,14 @@ spec:
     metadata:
       labels:
         application: api-gateway
+      annotations:
+        sidecar.istio.io/interceptionMode: TPROXY
     spec:
       nodeSelector:
         eks.amazonaws.com/nodegroup: apigateway_node_group
       containers:
       - name: api-gateway
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:53
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/api_gateway:55
         # command: ["/bin/sleep", "3650d"]
         command:
           - /bin/bash
@@ -91,6 +93,7 @@ metadata:
     ## cross zone load 옵션을 줘야 각 ip에 고루 분산됨
     service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
 spec:
+  externalTrafficPolicy: Local
   type: LoadBalancer
   selector:
     application: api-gateway

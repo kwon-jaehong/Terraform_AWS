@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drmath-elasticsearch
+  namespace: application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: drmath-elasticsearch
+  template:
+    metadata:
+      labels:
+        application: drmath-elasticsearch
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: inf_node_group
+      containers:
+      - name: image-embedding
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/drmath_elasticsearch:3
+        command:
+          - /bin/bash
+          - -c
+          - |
+            python3 main.py 
+        
+        resources:
+          limits:
+            cpu: 400m
+            memory: 300Mi
+          # requests:
+          #   cpu: 400m
+          #   memory: 300Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc

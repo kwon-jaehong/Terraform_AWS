@@ -16,6 +16,16 @@ module "eks_blueprints" {
         "system:nodes",
       ]
     }
+    ,
+    {
+      rolearn  = aws_iam_role.chunjae_ocr_service_role.arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+    }
+    
   ]
   
   vpc_id = aws_vpc.eks_vpc.id

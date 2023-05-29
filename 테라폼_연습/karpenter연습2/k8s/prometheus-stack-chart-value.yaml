@@ -1,0 +1,58 @@
+defaultRules:
+  rules:
+    etcd: false
+    kubeScheduler: false
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+grafana:
+  adminPassword: test123
+  # service:
+  #   annotations:
+  #     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #     service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+  #   type: LoadBalancer
+  extraExposePorts:
+    - name: https
+      port: 443
+      targetPort: 3000
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: gp2
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+prometheus:
+  
+  # service:
+  #   type: LoadBalancer
+
+  prometheusSpec:
+    retention: 31d
+    retentionSize: "20GB"
+    resources:
+      # limits:
+      #   cpu: 1500m
+      #   memory: 6144Mi
+      requests:
+        cpu: 400m
+        memory: 2096Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi

@@ -20,88 +20,92 @@ spec:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:18
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:26
+        # command: ["/bin/sleep", "3650d"]
         command:
           - /bin/bash
           - -c
           - |
-            ./env/bin/python rabbitmq_rec.py &
+            ./env/bin/python main.py &
             source start.sh        
         resources:
           limits:
-            # cpu: 3000m
-            # memory: 2500Mi
-            # aws.amazon.com/neuron: 1
-            aws.amazon.com/neuroncore: 3
-          # requests:
-          #   cpu: 3000m
-          #   memory: 2500Mi
-        env:
-          - name: redis_host
-            value: redis-master.messagesys.svc
-          - name: rabbitmq_host
-            value: production-rabbitmqcluster.messagesys.svc
-        livenessProbe:
-          initialDelaySeconds: 0
-          periodSeconds: 5
-          successThreshold: 1
-          failureThreshold: 1
-          exec:
-            command:
-            - env/bin/python
-            - check_neuroncore.py
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: character-recognition-neuron
-  namespace: application
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      application: character-recognition
-  template:
-    metadata:
-      labels:
-        application: character-recognition
-    spec:
-      ## 포드 스케줄러 작동
-      schedulerName: my-scheduler
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: eks.amazonaws.com/nodegroup 
-                operator: NotIn
-                values:
-                - inf_node_group
-      containers:
-      - name: character-recognition
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:18
-        command:
-          - /bin/bash
-          - -c
-          - |
-            ./env/bin/python rabbitmq_rec.py &
-            source start.sh        
-        resources:
-          limits:
-            # cpu: 3000m
-            # memory: 2500Mi
+            cpu: 3500m
+            memory: 10000Mi
             aws.amazon.com/neuron: 1
-            # aws.amazon.com/neuroncore: 2
+            # aws.amazon.com/neuroncore: 4
           # requests:
           #   cpu: 3000m
           #   memory: 2500Mi
         env:
           - name: NEURON_RT_VISIBLE_CORES
-            value: 0,1,2
+            value: 0,1,2,3
           - name: redis_host
             value: redis-master.messagesys.svc
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
+        # livenessProbe:
+        #   initialDelaySeconds: 0
+        #   periodSeconds: 5
+        #   successThreshold: 1
+        #   failureThreshold: 1
+        #   exec:
+        #     command:
+        #     - env/bin/python
+        #     - check_neuroncore.py
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: character-recognition-neuron
+#   namespace: application
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       application: character-recognition
+#   template:
+#     metadata:
+#       labels:
+#         application: character-recognition
+#     spec:
+#       ## 포드 스케줄러 작동
+#       schedulerName: my-scheduler
+#       affinity:
+#         nodeAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#             nodeSelectorTerms:
+#             - matchExpressions:
+#               - key: eks.amazonaws.com/nodegroup 
+#                 operator: NotIn
+#                 values:
+#                 - inf_node_group
+#       containers:
+#       - name: character-recognition
+#         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_rec:25
+#         # command: ["/bin/sleep", "3650d"]
+#         command:
+#           - /bin/bash
+#           - -c
+#           - |
+#             ./env/bin/python main.py &
+#             source start.sh        
+#         resources:
+#           limits:
+#             # cpu: 3000m
+#             # memory: 2500Mi
+#             aws.amazon.com/neuron: 1
+#             # aws.amazon.com/neuroncore: 2
+#           # requests:
+#           #   cpu: 3000m
+#           #   memory: 2500Mi
+#         env:
+#           - name: NEURON_RT_VISIBLE_CORES
+#             value: 0,1,2,3
+#           - name: redis_host
+#             value: redis-master.messagesys.svc
+#           - name: rabbitmq_host
+#             value: production-rabbitmqcluster.messagesys.svc
 ---
 kind: Service
 apiVersion: v1

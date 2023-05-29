@@ -1,0 +1,45 @@
+alertmanager:
+  service:
+    type: NodePort
+grafana:
+  service:
+    type: LoadBalancer
+  extraExposePorts:
+    - name: https
+      port: 443
+      targetPort: 3000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: gp2
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+prometheus:
+  service:
+    type: NodePort
+  prometheusSpec:
+    retention: 10d
+    retentionSize: "45GB"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi

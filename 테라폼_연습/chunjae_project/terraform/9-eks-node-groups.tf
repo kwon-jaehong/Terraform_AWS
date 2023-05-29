@@ -46,7 +46,7 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 
 
 
-
+# AmazonSSMManagedInstanceCore 정책 부여 ->
 resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role = aws_iam_role.chunjae_ocr_service_role.name
@@ -325,7 +325,7 @@ resource "aws_eks_node_group" "inf_node_group" {
 
 
   # 작업자 노드의 디스크 크기(GiB)
-  disk_size = 35
+  disk_size = 55
 
 
   # 포드 중단 예산 문제로 인해 기존 포드를 비울 수 없는 경우 버전 업데이트를 강제합니다.
