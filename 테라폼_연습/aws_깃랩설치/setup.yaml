@@ -84,6 +84,17 @@
             external_url="http://{{hostvars.localhost.terraform_json.git_server_eip}}"
             gitlab_rails['gitlab_shell_ssh_port']=8888
 
+        # docker run -d -it \
+        # --name gitlab \
+        # --hostname 43.201.136.149 \
+        # --publish 80:80 \
+        # --restart always \
+        # --env GITLAB_OMNIBUS_CONFIG="external_url 'http://43.201.136.149'; gitlab_rails['gitlab_shell_ssh_port'] = 8888" \
+        # --volume ./gitlab/config:/etc/gitlab \
+        # --volume ./gitlab/logs:/var/log/gitlab \
+        # --volume ./gitlab/data:/var/opt/gitlab \
+        # --volume ./gitlab/backup:/var/opt/gitlab/backups gitlab/gitlab-ce:15.4.6-ce.0
+        
 
 
     ## 이 테스크 위에 컨테이너 헬스체크 하나 넣자
@@ -141,7 +152,7 @@
         volumes:
           - /gitlab-runner/config:/etc/gitlab-runner ## 컨피그파일 저장
           - /var/run/docker.sock:/var/run/docker.sock ## 도커데몬 소켓 연동
-        # docker run -it -d -v /run/docker.sock:/var/run/docker.sock -v /gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:ubuntu-v15.5.1
+        # docker run -it -d --restart always -v /run/docker.sock:/var/run/docker.sock -v /gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner:ubuntu-v15.5.1
 
     - name: 기존 러너 탐색 (멱등성 보장을 위해 config파일 탐색)
       shell: cat config.toml | grep 'runners' -c
@@ -158,7 +169,7 @@
       shell: docker exec -it gitlab_runner /usr/bin/gitlab-runner register -n --url http://{{hostvars.localhost.terraform_json.git_server_eip}}  --registration-token  {{hostvars.gitlab_server.gitlab_shared_runner_token.stdout}} --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
       when: runner_count.stdout == "0"
       # gitlab-runner register -n --url http://3.133.133.67/ --registration-token c9Ue-tkpPoQvnnJtNxNZ --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
-
+      # gitlab-runner register -n --url http://43.201.136.149/ --registration-token EE57c48tQV74E4y2xNSk --executor docker --docker-image "docker:19.03.12" --docker-privileged --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 
 
 

@@ -20,14 +20,14 @@ spec:
         eks.amazonaws.com/nodegroup: inf_node_group
       containers:
       - name: character-detection
-        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:21
-        command: ["/bin/sleep", "3650d"]
-        # command:
-        #   - /bin/bash
-        #   - -c
-        #   - |
-        #     ./env/bin/python main.py &
-        #     source start.sh        
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:25
+        # command: ["/bin/sleep", "3650d"]
+        command:
+          - /bin/bash
+          - -c
+          - |
+            ./env/bin/python main.py &
+            source start.sh        
         resources:
           limits:
             # cpu: 1200m
@@ -42,59 +42,59 @@ spec:
             value: redis-master.messagesys.svc
           - name: rabbitmq_host
             value: production-rabbitmqcluster.messagesys.svc
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: character-detection-neuron
-#   namespace: application
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       application: character-detection
-#   template:
-#     metadata:
-#       labels:
-#         application: character-detection
-#     spec:
-#       ## 포드 스케줄러 작동
-#       schedulerName: my-scheduler
-#       affinity:
-#         nodeAffinity:
-#           requiredDuringSchedulingIgnoredDuringExecution:
-#             nodeSelectorTerms:
-#             - matchExpressions:
-#               - key: eks.amazonaws.com/nodegroup 
-#                 operator: NotIn
-#                 values:
-#                 - inf_node_group
-#       containers:
-#       - name: character-detection
-#         image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:21
-#         # command: ["/bin/sleep", "3650d"]
-#         command:
-#           - /bin/bash
-#           - -c
-#           - |
-#             ./env/bin/python main.py &
-#             source start.sh        
-#         resources:
-#           limits:
-#             # cpu: 1200m
-#             # memory: 800Mi
-#             aws.amazon.com/neuron: 1
-#             # aws.amazon.com/neuroncore: 1
-#           # requests:
-#           #   cpu: 1000m
-#           #   memory: 500Mi
-#         env:
-#           - name: redis_host
-#             value: redis-master.messagesys.svc
-#           - name: rabbitmq_host
-#             value: production-rabbitmqcluster.messagesys.svc
-#           - name: NEURON_RT_VISIBLE_CORES
-#             value: '0'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: character-detection-neuron
+  namespace: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: character-detection
+  template:
+    metadata:
+      labels:
+        application: character-detection
+    spec:
+      ## 포드 스케줄러 작동
+      schedulerName: my-scheduler
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup 
+                operator: NotIn
+                values:
+                - inf_node_group
+      containers:
+      - name: character-detection
+        image: 916657902198.dkr.ecr.us-east-2.amazonaws.com/char_det:25
+        # command: ["/bin/sleep", "3650d"]
+        command:
+          - /bin/bash
+          - -c
+          - |
+            ./env/bin/python main.py &
+            source start.sh        
+        resources:
+          limits:
+            # cpu: 1200m
+            # memory: 800Mi
+            aws.amazon.com/neuron: 1
+            # aws.amazon.com/neuroncore: 1
+          # requests:
+          #   cpu: 1000m
+          #   memory: 500Mi
+        env:
+          - name: redis_host
+            value: redis-master.messagesys.svc
+          - name: rabbitmq_host
+            value: production-rabbitmqcluster.messagesys.svc
+          - name: NEURON_RT_VISIBLE_CORES
+            value: '0'
 
 ---
 kind: Service
