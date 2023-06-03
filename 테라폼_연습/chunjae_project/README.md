@@ -110,6 +110,8 @@ t3 스몰 써도 될듯
 
 
 
+aws ec2 볼륨 확장
+https://gaemi606.tistory.com/entry/AWS-EC2-EBS-%EB%B3%BC%EB%A5%A8-%ED%99%95%EC%9E%A5%ED%95%98%EA%B8%B0-Linux-Ubuntu
 
 -------------------------
 > module.eks_blueprints.eks_cluster_id
