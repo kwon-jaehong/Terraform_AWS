@@ -84,16 +84,16 @@
             external_url="http://{{hostvars.localhost.terraform_json.git_server_eip}}"
             gitlab_rails['gitlab_shell_ssh_port']=8888
 
-        # docker run -d -it \
-        # --name gitlab \
-        # --hostname 43.201.136.149 \
-        # --publish 80:80 \
-        # --restart always \
-        # --env GITLAB_OMNIBUS_CONFIG="external_url 'http://43.201.136.149'; gitlab_rails['gitlab_shell_ssh_port'] = 8888" \
-        # --volume ./gitlab/config:/etc/gitlab \
-        # --volume ./gitlab/logs:/var/log/gitlab \
-        # --volume ./gitlab/data:/var/opt/gitlab \
-        # --volume ./gitlab/backup:/var/opt/gitlab/backups gitlab/gitlab-ce:15.4.6-ce.0
+# docker run -d -it \
+# --name gitlab \
+# --hostname 43.201.136.149 \
+# --publish 80:80 \
+# --restart always \
+# --env GITLAB_OMNIBUS_CONFIG="external_url 'http://43.201.136.149'; gitlab_rails['gitlab_shell_ssh_port'] = 8888" \
+# --volume ./gitlab/config:/etc/gitlab \
+# --volume ./gitlab/logs:/var/log/gitlab \
+# --volume ./gitlab/data:/var/opt/gitlab \
+# --volume ./gitlab/backup:/var/opt/gitlab/backups gitlab/gitlab-ce:15.4.6-ce.0
         
 
 
